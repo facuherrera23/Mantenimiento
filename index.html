@@ -35,12 +35,6 @@
       --font-badge: 'Open Sans', sans-serif;
     }
 
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
     body {
       background-color: var(--bg);
       color: var(--text-primary);
@@ -125,28 +119,38 @@
       letter-spacing: 0.2px;
     }
 
+    /* Estado con hexágono */
     .status-pulse {
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 0.7rem;
+      gap: 0.9rem;
       margin: 0.8rem 0 1.2rem 0;
     }
 
-    .pulse-dot {
-      width: 14px;
-      height: 14px;
-      background: var(--accent);
-      border-radius: 50%;
-      display: inline-block;
-      animation: pulse 1.8s ease-in-out infinite;
-      box-shadow: 0 0 0 0 rgba(32, 184, 171, 0.4);
+    .hexagon-wrapper {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 28px;
+      height: 28px;
+      flex-shrink: 0;
+      animation: pulse-hex 1.8s ease-in-out infinite;
     }
 
-    @keyframes pulse {
-      0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(32, 184, 171, 0.4); }
-      70% { transform: scale(1.15); box-shadow: 0 0 0 16px rgba(32, 184, 171, 0); }
-      100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(32, 184, 171, 0); }
+    .hexagon {
+      width: 22px;
+      height: 22px;
+      background: var(--accent);
+      clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+      box-shadow: 0 0 0 0 rgba(32, 184, 171, 0.4);
+      transition: all 0.3s ease;
+    }
+
+    @keyframes pulse-hex {
+      0% { transform: scale(0.92); }
+      50% { transform: scale(1.15); filter: brightness(1.3); }
+      100% { transform: scale(0.92); filter: brightness(1); }
     }
 
     .status-text {
@@ -192,7 +196,7 @@
       line-height: 1.6;
       color: var(--text-secondary);
       max-width: 480px;
-      margin: 0 auto 1.2rem auto;
+      margin: 0 auto 0.8rem auto;
     }
 
     .message a {
@@ -207,6 +211,62 @@
       border-bottom: 1.5px solid var(--accent);
       color: #4dd1c4;
     }
+
+    /* Redes sociales */
+    .social-links {
+      display: flex;
+      justify-content: center;
+      gap: 0.8rem;
+      margin: 0.8rem 0 0.8rem 0;
+      flex-wrap: wrap;
+    }
+
+    .social-links a {
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-family: var(--font-badge);
+      font-weight: 600;
+      font-size: 0.8rem;
+      letter-spacing: 0.3px;
+      padding: 0.5rem 1.2rem;
+      border-radius: 40px;
+      border: 1px solid var(--border);
+      background: var(--surface-2);
+      transition: all 0.25s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+
+    .social-links a:hover {
+      color: var(--text-primary);
+      border-color: var(--accent);
+      background: var(--surface-3);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 15px rgba(32, 184, 171, 0.1);
+    }
+
+    .social-links .social-icon {
+      width: 20px;
+      height: 20px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .social-links .social-icon svg {
+      width: 100%;
+      height: 100%;
+      fill: var(--accent);
+      transition: fill 0.25s ease;
+    }
+
+    .social-links .ig:hover .social-icon svg { fill: #e4405f; }
+    .social-links .fb:hover .social-icon svg { fill: #1877f2; }
+    .social-links .yt:hover .social-icon svg { fill: #ff0000; }
+    .social-links .tt:hover .social-icon svg { fill: #00f2ea; }
+    .social-links .email:hover .social-icon svg { fill: #20b8ab; }
 
     /* === JUEGO === */
     .game-wrapper {
@@ -332,6 +392,26 @@
       .game-hint {
         font-size: 0.6rem;
       }
+      .social-links {
+        gap: 0.5rem;
+      }
+      .social-links a {
+        font-size: 0.7rem;
+        padding: 0.4rem 0.9rem;
+        gap: 0.4rem;
+      }
+      .social-links .social-icon {
+        width: 16px;
+        height: 16px;
+      }
+      .hexagon-wrapper {
+        width: 22px;
+        height: 22px;
+      }
+      .hexagon {
+        width: 18px;
+        height: 18px;
+      }
     }
   </style>
 </head>
@@ -346,9 +426,11 @@
       <div class="cpi-badge"><strong>CPI.</strong> 1834</div>
     </div>
 
-    <!-- estado -->
+    <!-- estado con hexágono -->
     <div class="status-pulse">
-      <span class="pulse-dot"></span>
+      <span class="hexagon-wrapper">
+        <span class="hexagon"></span>
+      </span>
       <span class="status-text">En mantenimiento</span>
     </div>
 
@@ -362,12 +444,55 @@
     <p class="message">
       Estamos trabajando en nuestra plataforma digital. 
       Muy pronto volveremos con novedades y el catálogo 
-      de propiedades seleccionadas. 
-      <br />
-      <a href="#">bienenhaus.propiedades@gmail.com</a>
+      de propiedades seleccionadas.
     </p>
 
-    <!-- === JUEGO DINO CON AGACHARSE === -->
+    <!-- Redes Sociales -->
+    <div class="social-links">
+      <a href="https://instagram.com/bienenhaus.prop" target="_blank" class="ig" rel="noopener noreferrer">
+        <span class="social-icon">
+          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/>
+          </svg>
+        </span>
+        Instagram
+      </a>
+      <a href="https://facebook.com/Bienenhaus.prop" target="_blank" class="fb" rel="noopener noreferrer">
+        <span class="social-icon">
+          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+          </svg>
+        </span>
+        Facebook
+      </a>
+      <a href="https://www.youtube.com/@BienenhausPropiedades" target="_blank" class="yt" rel="noopener noreferrer">
+        <span class="social-icon">
+          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path d="M23.498 6.186a3.016 3.016 0 00-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 00.502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 002.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 002.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
+          </svg>
+        </span>
+        YouTube
+      </a>
+      <a href="https://www.tiktok.com/@bienenhaus.prop" target="_blank" class="tt" rel="noopener noreferrer">
+        <span class="social-icon">
+          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.11-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.15 1.07-.14 1.61.24 1.64 1.82 3.02 3.5 2.87 1.12-.01 2.19-.66 2.77-1.61.19-.33.3-.69.32-1.06.1-2.23.04-4.47.04-6.71.02-1.69.04-3.37.02-5.06h-.02z"/>
+          </svg>
+        </span>
+        TikTok
+      </a>
+      <a href="mailto:bienenhaus.propiedades@gmail.com" class="email">
+        <span class="social-icon">
+          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path d="M1.5 8.67v8.58a3 3 0 003 3h15a3 3 0 003-3V8.67l-8.928 5.493a3 3 0 01-3.144 0L1.5 8.67z"/>
+            <path d="M22.5 6.908V6.75a3 3 0 00-3-3h-15a3 3 0 00-3 3v.158l9.714 5.978a1.5 1.5 0 001.572 0L22.5 6.908z"/>
+          </svg>
+        </span>
+        Email
+      </a>
+    </div>
+
+    <!-- === JUEGO DINO === -->
     <div class="game-wrapper">
       <div class="game-container" id="gameContainer">
         <canvas id="gameCanvas" width="600" height="180"></canvas>
@@ -414,23 +539,21 @@
         gravity: 0.6,
         jumpPower: -10,
         grounded: true,
-        ducking: false,      // si está agachado
+        ducking: false,
         normalH: 34,
         duckH: 20,
         normalW: 28,
         duckW: 36,
       };
 
-      // Obstáculos: cactus (suelo) y pájaros (voladores, obligan a agacharse)
       let obstacles = [];
       const CACTUS_W = 12;
       const CACTUS_MIN_H = 22;
       const CACTUS_MAX_H = 34;
 
-      // Pájaro
       const BIRD_W = 22;
       const BIRD_H = 16;
-      const BIRD_Y_MIN = GROUND_Y - 58; // altura de vuelo
+      const BIRD_Y_MIN = GROUND_Y - 58;
       const BIRD_Y_MAX = GROUND_Y - 34;
 
       let speed = 5;
@@ -442,11 +565,9 @@
       let score = 0;
       let highScore = 0;
 
-      // Control de entrada
       let jumpPressed = false;
       let duckPressed = false;
 
-      // ========== funciones ==========
       function resetGame() {
         DINO.y = GROUND_Y - DINO.normalH;
         DINO.h = DINO.normalH;
@@ -470,12 +591,9 @@
         return ax < bx + bw && ax + aw > bx && ay < by + bh && ay + ah > by;
       }
 
-      // Spawn de obstáculo: cactus o pájaro
       function spawnObstacle() {
-        // 60% cactus, 40% pájaro (más pájaros a mayor puntuación)
         const birdChance = Math.min(0.5, 0.25 + Math.floor(score / 150) * 0.05);
         if (Math.random() < birdChance) {
-          // Pájaro
           const y = BIRD_Y_MIN + Math.random() * (BIRD_Y_MAX - BIRD_Y_MIN);
           obstacles.push({
             type: 'bird',
@@ -486,7 +604,6 @@
             wingPhase: Math.random() * Math.PI * 2
           });
         } else {
-          // Cactus
           const h = Math.floor(Math.random() * (CACTUS_MAX_H - CACTUS_MIN_H + 1)) + CACTUS_MIN_H;
           obstacles.push({
             type: 'cactus',
@@ -503,7 +620,6 @@
           resetGame();
           return;
         }
-        // Solo saltar si no está agachado y está en el suelo
         if (DINO.grounded && !DINO.ducking) {
           DINO.vy = DINO.jumpPower;
           DINO.grounded = false;
@@ -513,7 +629,6 @@
       function duck(active) {
         if (gameOver) return;
         duckPressed = active;
-        // Solo agacharse si está en el suelo
         if (active && DINO.grounded) {
           DINO.ducking = true;
           DINO.h = DINO.duckH;
@@ -529,22 +644,18 @@
         }
       }
 
-      // Actualizar lógica
       function update() {
         if (gameOver) return;
 
-        // Físicas dino
         DINO.vy += DINO.gravity;
         DINO.y += DINO.vy;
 
-        // Suelo
         const currentH = DINO.ducking ? DINO.duckH : DINO.normalH;
         if (DINO.y >= GROUND_Y - currentH) {
           DINO.y = GROUND_Y - currentH;
           DINO.vy = 0;
           if (!DINO.grounded) {
             DINO.grounded = true;
-            // Si estaba agachado al aterrizar, mantener agachado
             if (duckPressed) {
               DINO.ducking = true;
               DINO.h = DINO.duckH;
@@ -554,7 +665,6 @@
           }
         } else {
           DINO.grounded = false;
-          // Si está en el aire, no puede estar agachado
           if (DINO.ducking) {
             DINO.ducking = false;
             DINO.h = DINO.normalH;
@@ -562,17 +672,14 @@
           }
         }
 
-        // Mover obstáculos
         for (let i = obstacles.length - 1; i >= 0; i--) {
           const obs = obstacles[i];
           obs.x -= speed;
 
-          // Colisión
           let hit = false;
           if (obs.type === 'cactus') {
             hit = rectCollide(DINO.x, DINO.y, DINO.w, DINO.h, obs.x, obs.y, obs.w, obs.h);
           } else if (obs.type === 'bird') {
-            // Pájaro: si el dino está agachado, reduce la hitbox vertical
             const dinoH = DINO.ducking ? DINO.duckH : DINO.normalH;
             const dinoY = DINO.ducking ? GROUND_Y - DINO.duckH : DINO.y;
             hit = rectCollide(DINO.x, dinoY, DINO.w, dinoH, obs.x, obs.y, obs.w, obs.h);
@@ -584,7 +691,6 @@
             return;
           }
 
-          // Eliminar si sale de pantalla
           if (obs.x + obs.w < 0) {
             obstacles.splice(i, 1);
             score += 5;
@@ -594,7 +700,6 @@
           }
         }
 
-        // Spawn
         frameCounter++;
         const spawnRate = Math.max(22, SPAWN_RATE - Math.floor(score / 25));
         if (frameCounter >= spawnRate) {
@@ -602,20 +707,17 @@
           frameCounter = 0;
         }
 
-        // score por tiempo
         if (!gameOver) {
           score += 0.12;
           updateScore();
         }
       }
 
-      // ========== Dibujo ==========
       function draw() {
         ctx.clearRect(0, 0, W, H);
         ctx.fillStyle = '#0b0b0b';
         ctx.fillRect(0, 0, W, H);
 
-        // Suelo
         ctx.fillStyle = '#1a1a1a';
         ctx.fillRect(0, GROUND_Y, W, GROUND_H);
         ctx.strokeStyle = '#2a2a2a';
@@ -625,7 +727,6 @@
         ctx.lineTo(W, GROUND_Y);
         ctx.stroke();
 
-        // Detalles suelo
         ctx.strokeStyle = '#222';
         ctx.lineWidth = 1;
         for (let i = 0; i < W; i += 25) {
@@ -637,36 +738,28 @@
           ctx.stroke();
         }
 
-        // DIBUJAR DINO
         const dx = DINO.x, dy = DINO.y;
         const dw = DINO.w, dh = DINO.h;
         const isDucking = DINO.ducking;
 
-        // Cuerpo
         ctx.fillStyle = '#3a9b7a';
         ctx.fillRect(dx, dy, dw, dh);
 
         if (isDucking) {
-          // Dino agachado - más ancho y bajo
           ctx.fillStyle = '#2a7a5a';
-          // Ojo
           ctx.fillStyle = '#f0f0f0';
           ctx.fillRect(dx + 22, dy + 3, 6, 6);
           ctx.fillStyle = '#111';
           ctx.fillRect(dx + 26, dy + 5, 3, 3);
-          // Boca
           ctx.fillStyle = '#226644';
           ctx.fillRect(dx + 2, dy + dh - 3, 14, 3);
-          // Cresta pequeña
           ctx.fillStyle = '#2a7a5a';
           ctx.fillRect(dx + 4, dy - 2, 4, 4);
           ctx.fillRect(dx + 14, dy - 1, 4, 3);
-          // Patas (cortas)
           ctx.fillStyle = '#1f5c44';
           ctx.fillRect(dx + 4, dy + dh, 5, 4);
           ctx.fillRect(dx + 24, dy + dh, 5, 4);
         } else {
-          // Dino normal (de pie)
           ctx.fillStyle = '#f0f0f0';
           ctx.fillRect(dx + 18, dy + 4, 6, 6);
           ctx.fillStyle = '#111';
@@ -690,7 +783,6 @@
           }
         }
 
-        // DIBUJAR OBSTÁCULOS
         obstacles.forEach(obs => {
           if (obs.type === 'cactus') {
             ctx.fillStyle = '#2d7a4a';
@@ -704,23 +796,18 @@
             ctx.fillRect(obs.x + 2, obs.y + 4, 2, obs.h - 8);
             ctx.fillRect(obs.x + 7, obs.y + 6, 2, obs.h - 12);
           } else if (obs.type === 'bird') {
-            // Pájaro (estilo pixel)
             const phase = obs.wingPhase || 0;
             const wingUp = Math.sin(phase + performance.now() / 80) > 0;
             ctx.fillStyle = '#7a4a3a';
             ctx.fillRect(obs.x, obs.y, obs.w, obs.h);
-            // Cabeza
             ctx.fillStyle = '#8a5a4a';
             ctx.fillRect(obs.x + obs.w - 6, obs.y - 4, 8, 8);
-            // Pico
             ctx.fillStyle = '#cc8833';
             ctx.fillRect(obs.x + obs.w, obs.y, 5, 4);
-            // Ojo
             ctx.fillStyle = '#f0f0f0';
             ctx.fillRect(obs.x + obs.w - 4, obs.y - 2, 4, 4);
             ctx.fillStyle = '#111';
             ctx.fillRect(obs.x + obs.w - 2, obs.y, 2, 2);
-            // Ala
             ctx.fillStyle = wingUp ? '#6a3a2a' : '#8a5a4a';
             if (wingUp) {
               ctx.fillRect(obs.x - 4, obs.y - 6, 8, 6);
@@ -729,13 +816,11 @@
               ctx.fillRect(obs.x - 4, obs.y + obs.h - 2, 8, 6);
               ctx.fillRect(obs.x + 6, obs.y + obs.h - 4, 6, 6);
             }
-            // Cola
             ctx.fillStyle = '#6a3a2a';
             ctx.fillRect(obs.x - 6, obs.y + 4, 6, 6);
           }
         });
 
-        // Game Over
         if (gameOver) {
           ctx.fillStyle = 'rgba(0,0,0,0.55)';
           ctx.fillRect(0, 0, W, H);
@@ -750,14 +835,12 @@
         }
       }
 
-      // ========== bucle ==========
       function gameLoop() {
         update();
         draw();
         requestAnimationFrame(gameLoop);
       }
 
-      // ========== Eventos ==========
       function handleJump(e) {
         if (e) e.preventDefault();
         jump();
@@ -773,7 +856,6 @@
         duck(false);
       }
 
-      // Teclado
       document.addEventListener('keydown', (e) => {
         if (e.key === ' ' || e.key === 'Space') {
           e.preventDefault();
@@ -792,15 +874,12 @@
         }
       });
 
-      // Click en el canvas o contenedor (salta)
       const container = document.getElementById('gameContainer');
       container.addEventListener('click', (e) => {
         e.preventDefault();
         handleJump(e);
       });
 
-      // Touch: toque simple salta, toque con dos dedos o deslizar hacia abajo = agacharse?
-      // Simplificamos: un toque salta, y también usamos eventos touch para agacharse con gesto hacia abajo
       let touchStartY = 0;
       container.addEventListener('touchstart', (e) => {
         e.preventDefault();
@@ -808,12 +887,8 @@
         if (touch) {
           touchStartY = touch.clientY;
         }
-        // Si hay más de un toque, agacharse
         if (e.touches.length >= 2) {
           handleDuckStart(e);
-        } else {
-          // Un toque: saltar (pero si se mantiene y desliza hacia abajo, agacharse)
-          // Lo manejamos en touchmove
         }
       }, { passive: false });
 
@@ -823,10 +898,8 @@
           const touch = e.touches[0];
           const deltaY = touch.clientY - touchStartY;
           if (deltaY > 20) {
-            // Deslizar hacia abajo = agacharse
             handleDuckStart(e);
           } else if (deltaY < -20) {
-            // Deslizar hacia arriba = saltar
             handleJump(e);
           }
         }
@@ -834,17 +907,11 @@
 
       container.addEventListener('touchend', (e) => {
         e.preventDefault();
-        // Si no quedan toques, dejar de agacharse
         if (e.touches.length === 0) {
           handleDuckEnd(e);
         }
-        // Si era un toque simple sin deslizar, saltamos
-        // (lo manejamos con un flag, pero usamos el click para saltar también)
       }, { passive: false });
 
-      // También soportamos click para saltar (ya está)
-
-      // ========== Iniciar ==========
       resetGame();
       gameLoop();
 
