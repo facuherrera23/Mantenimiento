@@ -57,6 +57,8 @@
       box-shadow: 0 30px 60px -20px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(255, 255, 255, 0.02) inset;
       text-align: center;
       transition: all 0.25s ease;
+      position: relative;
+      z-index: 1;
     }
 
     .logo-wrapper {
@@ -119,13 +121,14 @@
       letter-spacing: 0.2px;
     }
 
-    /* Estado con hexágono */
+    /* Hexágono clickeable */
     .status-pulse {
       display: flex;
       align-items: center;
       justify-content: center;
       gap: 0.9rem;
       margin: 0.8rem 0 1.2rem 0;
+      cursor: pointer;
     }
 
     .hexagon-wrapper {
@@ -136,6 +139,12 @@
       height: 28px;
       flex-shrink: 0;
       animation: pulse-hex 1.8s ease-in-out infinite;
+      transition: transform 0.2s ease;
+      cursor: pointer;
+    }
+
+    .hexagon-wrapper:hover {
+      transform: scale(1.1);
     }
 
     .hexagon {
@@ -145,6 +154,7 @@
       clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
       box-shadow: 0 0 0 0 rgba(32, 184, 171, 0.4);
       transition: all 0.3s ease;
+      pointer-events: none;
     }
 
     @keyframes pulse-hex {
@@ -159,6 +169,12 @@
       font-size: 1.1rem;
       color: var(--text-secondary);
       letter-spacing: 0.3px;
+      cursor: pointer;
+      transition: color 0.2s ease;
+    }
+
+    .status-text:hover {
+      color: var(--text-primary);
     }
 
     .maintenance-title {
@@ -268,7 +284,7 @@
     .social-links .tt:hover .social-icon svg { fill: #00f2ea; }
     .social-links .email:hover .social-icon svg { fill: #20b8ab; }
 
-    /* === JUEGO === */
+    /* === JUEGO DINO === */
     .game-wrapper {
       background: var(--surface-2);
       border-radius: 28px;
@@ -372,6 +388,236 @@
       transition: all 0.3s ease;
     }
 
+    /* ===== MODAL DEL MEMORAMA ===== */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.85);
+      backdrop-filter: blur(8px);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+      animation: fadeIn 0.3s ease;
+    }
+
+    .modal-overlay.active {
+      display: flex;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: scale(0.95); }
+      to { opacity: 1; transform: scale(1); }
+    }
+
+    .modal-content {
+      background: var(--surface-1);
+      border: 1px solid var(--border);
+      border-radius: 40px;
+      padding: 2.5rem 2rem 2rem 2rem;
+      max-width: 560px;
+      width: 100%;
+      max-height: 90vh;
+      overflow-y: auto;
+      position: relative;
+      box-shadow: 0 40px 80px rgba(0, 0, 0, 0.8);
+    }
+
+    .modal-close {
+      position: absolute;
+      top: 1rem;
+      right: 1.5rem;
+      background: none;
+      border: none;
+      color: var(--text-secondary);
+      font-size: 1.8rem;
+      cursor: pointer;
+      transition: color 0.2s, transform 0.2s;
+      font-family: var(--font-body);
+      line-height: 1;
+      padding: 0.2rem 0.6rem;
+      border-radius: 20px;
+    }
+
+    .modal-close:hover {
+      color: var(--text-primary);
+      transform: rotate(90deg);
+    }
+
+    .modal-title {
+      font-family: var(--font-display);
+      font-size: 1.8rem;
+      color: var(--text-primary);
+      text-align: center;
+      margin-bottom: 0.3rem;
+      letter-spacing: 0.02em;
+    }
+
+    .modal-subtitle {
+      font-family: var(--font-body);
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+      text-align: center;
+      margin-bottom: 1.5rem;
+    }
+
+    .modal-stats {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.2rem;
+      font-family: var(--font-badge);
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+      padding: 0 0.2rem;
+    }
+
+    .modal-stats .pairs-found {
+      color: var(--accent);
+      font-weight: 600;
+    }
+
+    .modal-stats .attempts {
+      color: var(--text-muted);
+    }
+
+    .memory-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 0.7rem;
+      max-width: 480px;
+      margin: 0 auto;
+    }
+
+    .memory-card {
+      aspect-ratio: 1 / 1;
+      background: var(--surface-3);
+      border: 2px solid var(--border);
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2.2rem;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      user-select: none;
+      position: relative;
+      transform-style: preserve-3d;
+    }
+
+    .memory-card .card-front,
+    .memory-card .card-back {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 14px;
+      backface-visibility: hidden;
+      transition: transform 0.5s cubic-bezier(0.4, 0.0, 0.2, 1);
+    }
+
+    .memory-card .card-front {
+      background: var(--surface-3);
+      border: 1px solid var(--border);
+      transform: rotateY(180deg);
+      font-size: 2.4rem;
+    }
+
+    .memory-card .card-back {
+      background: var(--accent);
+      transform: rotateY(0deg);
+      font-size: 1.6rem;
+      color: #fff;
+      font-weight: 700;
+      font-family: var(--font-display);
+      letter-spacing: 0.1em;
+    }
+
+    /* Estado: carta volteada (muestra el icono) */
+    .memory-card.flipped .card-front {
+      transform: rotateY(0deg);
+    }
+
+    .memory-card.flipped .card-back {
+      transform: rotateY(-180deg);
+    }
+
+    /* Estado: carta emparejada (permanece visible) */
+    .memory-card.matched {
+      opacity: 0.6;
+      cursor: default;
+      pointer-events: none;
+      border-color: var(--accent);
+    }
+
+    .memory-card.matched .card-front {
+      transform: rotateY(0deg);
+    }
+
+    .memory-card.matched .card-back {
+      transform: rotateY(-180deg);
+      background: var(--accent-dark);
+    }
+
+    .memory-card:not(.flipped):not(.matched):hover {
+      transform: scale(1.05);
+      border-color: var(--accent);
+    }
+
+    .memory-card:not(.flipped):not(.matched):active {
+      transform: scale(0.95);
+    }
+
+    .modal-footer {
+      text-align: center;
+      margin-top: 1.5rem;
+    }
+
+    .btn-restart {
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+      font-family: var(--font-badge);
+      font-weight: 600;
+      font-size: 0.85rem;
+      padding: 0.6rem 2rem;
+      border-radius: 40px;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      letter-spacing: 0.3px;
+    }
+
+    .btn-restart:hover {
+      border-color: var(--accent);
+      color: var(--text-primary);
+      background: var(--surface-3);
+      transform: translateY(-1px);
+    }
+
+    .btn-restart:active {
+      transform: scale(0.95);
+    }
+
+    .win-message {
+      display: none;
+      font-family: var(--font-display);
+      font-size: 1.4rem;
+      color: var(--accent);
+      text-align: center;
+      margin-top: 0.5rem;
+      animation: pulse-hex 1.2s ease-in-out infinite;
+    }
+
+    .win-message.show {
+      display: block;
+    }
+
     @media (max-width: 540px) {
       .maintenance-card {
         padding: 1.8rem 1.2rem;
@@ -412,6 +658,23 @@
         width: 18px;
         height: 18px;
       }
+
+      .modal-content {
+        padding: 1.8rem 1rem 1.5rem 1rem;
+        border-radius: 28px;
+      }
+      .memory-grid {
+        gap: 0.5rem;
+      }
+      .memory-card .card-front {
+        font-size: 1.6rem;
+      }
+      .memory-card .card-back {
+        font-size: 1.2rem;
+      }
+      .modal-title {
+        font-size: 1.4rem;
+      }
     }
   </style>
 </head>
@@ -426,12 +689,12 @@
       <div class="cpi-badge"><strong>CPI.</strong> 1834</div>
     </div>
 
-    <!-- estado con hexágono -->
-    <div class="status-pulse">
+    <!-- estado con hexágono clickeable -->
+    <div class="status-pulse" id="hexagonTrigger">
       <span class="hexagon-wrapper">
         <span class="hexagon"></span>
       </span>
-      <span class="status-text">En mantenimiento</span>
+      <span class="status-text">En mantenimiento · ¡Toca aquí!</span>
     </div>
 
     <h1 class="maintenance-title">
@@ -515,9 +778,35 @@
     </div>
   </div>
 
+  <!-- ===== MODAL MEMORAMA ===== -->
+  <div class="modal-overlay" id="memoryModal">
+    <div class="modal-content">
+      <button class="modal-close" id="closeModal">✕</button>
+      <div class="modal-title">🏠 MEMORAMA</div>
+      <div class="modal-subtitle">Encuentra las parejas de propiedades</div>
+
+      <div class="modal-stats">
+        <span class="pairs-found">🔍 <span id="pairsFound">0</span>/6</span>
+        <span class="attempts">Intentos: <span id="attemptsCount">0</span></span>
+      </div>
+
+      <div class="memory-grid" id="memoryGrid">
+        <!-- Las cartas se generan con JavaScript -->
+      </div>
+
+      <div class="win-message" id="winMessage">🎉 ¡Felicidades! Encontraste todas las parejas</div>
+
+      <div class="modal-footer">
+        <button class="btn-restart" id="restartGame">🔄 Reiniciar juego</button>
+      </div>
+    </div>
+  </div>
+
   <script>
+    // ============================================================
+    // 1. JUEGO DINO
+    // ============================================================
     (function(){
-      // ===================== JUEGO DINO (con agacharse) =====================
       const canvas = document.getElementById('gameCanvas');
       const ctx = canvas.getContext('2d');
       const scoreSpan = document.getElementById('scoreDisplay');
@@ -529,7 +818,6 @@
       const GROUND_Y = 155;
       const GROUND_H = 25;
 
-      // Dino - estados: normal, agachado
       const DINO = {
         x: 50,
         y: GROUND_Y - 34,
@@ -550,7 +838,6 @@
       const CACTUS_W = 12;
       const CACTUS_MIN_H = 22;
       const CACTUS_MAX_H = 34;
-
       const BIRD_W = 22;
       const BIRD_H = 16;
       const BIRD_Y_MIN = GROUND_Y - 58;
@@ -560,12 +847,9 @@
       const BASE_SPEED = 5;
       let frameCounter = 0;
       const SPAWN_RATE = 50;
-
       let gameOver = false;
       let score = 0;
       let highScore = 0;
-
-      let jumpPressed = false;
       let duckPressed = false;
 
       function resetGame() {
@@ -595,31 +879,15 @@
         const birdChance = Math.min(0.5, 0.25 + Math.floor(score / 150) * 0.05);
         if (Math.random() < birdChance) {
           const y = BIRD_Y_MIN + Math.random() * (BIRD_Y_MAX - BIRD_Y_MIN);
-          obstacles.push({
-            type: 'bird',
-            x: W,
-            y: y,
-            w: BIRD_W,
-            h: BIRD_H,
-            wingPhase: Math.random() * Math.PI * 2
-          });
+          obstacles.push({ type: 'bird', x: W, y: y, w: BIRD_W, h: BIRD_H, wingPhase: Math.random() * Math.PI * 2 });
         } else {
           const h = Math.floor(Math.random() * (CACTUS_MAX_H - CACTUS_MIN_H + 1)) + CACTUS_MIN_H;
-          obstacles.push({
-            type: 'cactus',
-            x: W,
-            y: GROUND_Y - h,
-            w: CACTUS_W,
-            h: h
-          });
+          obstacles.push({ type: 'cactus', x: W, y: GROUND_Y - h, w: CACTUS_W, h: h });
         }
       }
 
       function jump() {
-        if (gameOver) {
-          resetGame();
-          return;
-        }
+        if (gameOver) { resetGame(); return; }
         if (DINO.grounded && !DINO.ducking) {
           DINO.vy = DINO.jumpPower;
           DINO.grounded = false;
@@ -638,18 +906,14 @@
           DINO.ducking = false;
           DINO.h = DINO.normalH;
           DINO.w = DINO.normalW;
-          if (DINO.grounded) {
-            DINO.y = GROUND_Y - DINO.normalH;
-          }
+          if (DINO.grounded) DINO.y = GROUND_Y - DINO.normalH;
         }
       }
 
       function update() {
         if (gameOver) return;
-
         DINO.vy += DINO.gravity;
         DINO.y += DINO.vy;
-
         const currentH = DINO.ducking ? DINO.duckH : DINO.normalH;
         if (DINO.y >= GROUND_Y - currentH) {
           DINO.y = GROUND_Y - currentH;
@@ -671,11 +935,9 @@
             DINO.w = DINO.normalW;
           }
         }
-
         for (let i = obstacles.length - 1; i >= 0; i--) {
           const obs = obstacles[i];
           obs.x -= speed;
-
           let hit = false;
           if (obs.type === 'cactus') {
             hit = rectCollide(DINO.x, DINO.y, DINO.w, DINO.h, obs.x, obs.y, obs.w, obs.h);
@@ -684,13 +946,11 @@
             const dinoY = DINO.ducking ? GROUND_Y - DINO.duckH : DINO.y;
             hit = rectCollide(DINO.x, dinoY, DINO.w, dinoH, obs.x, obs.y, obs.w, obs.h);
           }
-
           if (hit) {
             gameOver = true;
             if (score > highScore) highScore = score;
             return;
           }
-
           if (obs.x + obs.w < 0) {
             obstacles.splice(i, 1);
             score += 5;
@@ -699,14 +959,12 @@
             if (speed > 15) speed = 15;
           }
         }
-
         frameCounter++;
         const spawnRate = Math.max(22, SPAWN_RATE - Math.floor(score / 25));
         if (frameCounter >= spawnRate) {
           spawnObstacle();
           frameCounter = 0;
         }
-
         if (!gameOver) {
           score += 0.12;
           updateScore();
@@ -717,7 +975,6 @@
         ctx.clearRect(0, 0, W, H);
         ctx.fillStyle = '#0b0b0b';
         ctx.fillRect(0, 0, W, H);
-
         ctx.fillStyle = '#1a1a1a';
         ctx.fillRect(0, GROUND_Y, W, GROUND_H);
         ctx.strokeStyle = '#2a2a2a';
@@ -726,7 +983,6 @@
         ctx.moveTo(0, GROUND_Y);
         ctx.lineTo(W, GROUND_Y);
         ctx.stroke();
-
         ctx.strokeStyle = '#222';
         ctx.lineWidth = 1;
         for (let i = 0; i < W; i += 25) {
@@ -737,16 +993,10 @@
           ctx.lineTo(x + 12, GROUND_Y + 6);
           ctx.stroke();
         }
-
-        const dx = DINO.x, dy = DINO.y;
-        const dw = DINO.w, dh = DINO.h;
-        const isDucking = DINO.ducking;
-
+        const dx = DINO.x, dy = DINO.y, dw = DINO.w, dh = DINO.h;
         ctx.fillStyle = '#3a9b7a';
         ctx.fillRect(dx, dy, dw, dh);
-
-        if (isDucking) {
-          ctx.fillStyle = '#2a7a5a';
+        if (DINO.ducking) {
           ctx.fillStyle = '#f0f0f0';
           ctx.fillRect(dx + 22, dy + 3, 6, 6);
           ctx.fillStyle = '#111';
@@ -782,7 +1032,6 @@
             ctx.fillRect(dx + 19, dy + dh - 2, 5, 8);
           }
         }
-
         obstacles.forEach(obs => {
           if (obs.type === 'cactus') {
             ctx.fillStyle = '#2d7a4a';
@@ -796,8 +1045,7 @@
             ctx.fillRect(obs.x + 2, obs.y + 4, 2, obs.h - 8);
             ctx.fillRect(obs.x + 7, obs.y + 6, 2, obs.h - 12);
           } else if (obs.type === 'bird') {
-            const phase = obs.wingPhase || 0;
-            const wingUp = Math.sin(phase + performance.now() / 80) > 0;
+            const wingUp = Math.sin((obs.wingPhase || 0) + performance.now() / 80) > 0;
             ctx.fillStyle = '#7a4a3a';
             ctx.fillRect(obs.x, obs.y, obs.w, obs.h);
             ctx.fillStyle = '#8a5a4a';
@@ -820,7 +1068,6 @@
             ctx.fillRect(obs.x - 6, obs.y + 4, 6, 6);
           }
         });
-
         if (gameOver) {
           ctx.fillStyle = 'rgba(0,0,0,0.55)';
           ctx.fillRect(0, 0, W, H);
@@ -841,80 +1088,203 @@
         requestAnimationFrame(gameLoop);
       }
 
-      function handleJump(e) {
-        if (e) e.preventDefault();
-        jump();
-      }
-
-      function handleDuckStart(e) {
-        if (e) e.preventDefault();
-        duck(true);
-      }
-
-      function handleDuckEnd(e) {
-        if (e) e.preventDefault();
-        duck(false);
-      }
+      function handleJump(e) { if (e) e.preventDefault(); jump(); }
+      function handleDuckStart(e) { if (e) e.preventDefault(); duck(true); }
+      function handleDuckEnd(e) { if (e) e.preventDefault(); duck(false); }
 
       document.addEventListener('keydown', (e) => {
-        if (e.key === ' ' || e.key === 'Space') {
-          e.preventDefault();
-          handleJump(e);
-        }
-        if (e.key === 'ArrowDown' || e.key === 'Down') {
-          e.preventDefault();
-          handleDuckStart(e);
-        }
+        if (e.key === ' ' || e.key === 'Space') { e.preventDefault(); handleJump(e); }
+        if (e.key === 'ArrowDown' || e.key === 'Down') { e.preventDefault(); handleDuckStart(e); }
       });
-
       document.addEventListener('keyup', (e) => {
-        if (e.key === 'ArrowDown' || e.key === 'Down') {
-          e.preventDefault();
-          handleDuckEnd(e);
-        }
+        if (e.key === 'ArrowDown' || e.key === 'Down') { e.preventDefault(); handleDuckEnd(e); }
       });
 
       const container = document.getElementById('gameContainer');
-      container.addEventListener('click', (e) => {
-        e.preventDefault();
-        handleJump(e);
-      });
+      container.addEventListener('click', (e) => { e.preventDefault(); handleJump(e); });
 
       let touchStartY = 0;
       container.addEventListener('touchstart', (e) => {
         e.preventDefault();
         const touch = e.touches[0];
-        if (touch) {
-          touchStartY = touch.clientY;
-        }
-        if (e.touches.length >= 2) {
-          handleDuckStart(e);
-        }
+        if (touch) touchStartY = touch.clientY;
+        if (e.touches.length >= 2) handleDuckStart(e);
       }, { passive: false });
-
       container.addEventListener('touchmove', (e) => {
         e.preventDefault();
         if (e.touches.length === 1) {
           const touch = e.touches[0];
           const deltaY = touch.clientY - touchStartY;
-          if (deltaY > 20) {
-            handleDuckStart(e);
-          } else if (deltaY < -20) {
-            handleJump(e);
-          }
+          if (deltaY > 20) handleDuckStart(e);
+          else if (deltaY < -20) handleJump(e);
         }
       }, { passive: false });
-
       container.addEventListener('touchend', (e) => {
         e.preventDefault();
-        if (e.touches.length === 0) {
-          handleDuckEnd(e);
-        }
+        if (e.touches.length === 0) handleDuckEnd(e);
       }, { passive: false });
 
       resetGame();
       gameLoop();
+    })();
 
+    // ============================================================
+    // 2. MEMORAMA - VERSIÓN CORREGIDA (con rotación y ocultamiento)
+    // ============================================================
+    (function(){
+      const modal = document.getElementById('memoryModal');
+      const grid = document.getElementById('memoryGrid');
+      const pairsFoundSpan = document.getElementById('pairsFound');
+      const attemptsSpan = document.getElementById('attemptsCount');
+      const winMessage = document.getElementById('winMessage');
+      const restartBtn = document.getElementById('restartGame');
+      const closeBtn = document.getElementById('closeModal');
+      const hexTrigger = document.getElementById('hexagonTrigger');
+
+      // 6 pares de iconos de propiedades
+      const ICONS = ['🏠', '🏢', '🏘️', '🏡', '🏗️', '🏬'];
+
+      let cards = [];
+      let flippedIndices = [];
+      let matchedPairs = 0;
+      let attempts = 0;
+      let isLocked = false;
+
+      function shuffle(array) {
+        for (let i = array.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [array[i], array[j]] = [array[j], array[i]];
+        }
+        return array;
+      }
+
+      function initGame() {
+        // Crear pares: cada icono aparece dos veces
+        let deck = [];
+        ICONS.forEach((icon, idx) => {
+          deck.push({ icon: icon, pairId: idx });
+          deck.push({ icon: icon, pairId: idx });
+        });
+        deck = shuffle(deck);
+
+        cards = deck.map((item, index) => ({
+          ...item,
+          index: index,
+          flipped: false,
+          matched: false
+        }));
+
+        flippedIndices = [];
+        matchedPairs = 0;
+        attempts = 0;
+        isLocked = false;
+        winMessage.classList.remove('show');
+
+        pairsFoundSpan.textContent = '0';
+        attemptsSpan.textContent = '0';
+
+        renderGrid();
+      }
+
+      function renderGrid() {
+        grid.innerHTML = '';
+        cards.forEach((card, index) => {
+          const div = document.createElement('div');
+          div.className = 'memory-card';
+          if (card.matched) div.classList.add('matched');
+          if (card.flipped) div.classList.add('flipped');
+
+          const front = document.createElement('div');
+          front.className = 'card-front';
+          front.textContent = card.icon;
+
+          const back = document.createElement('div');
+          back.className = 'card-back';
+          back.textContent = '?';
+
+          div.appendChild(front);
+          div.appendChild(back);
+
+          div.dataset.index = index;
+          div.addEventListener('click', (e) => {
+            e.stopPropagation();
+            handleCardClick(index);
+          });
+
+          grid.appendChild(div);
+        });
+      }
+
+      function handleCardClick(index) {
+        if (isLocked) return;
+        const card = cards[index];
+        if (card.flipped || card.matched) return;
+
+        // Voltear carta
+        card.flipped = true;
+        flippedIndices.push(index);
+        renderGrid();
+
+        if (flippedIndices.length === 2) {
+          isLocked = true;
+          attempts++;
+          attemptsSpan.textContent = attempts;
+
+          const idx1 = flippedIndices[0];
+          const idx2 = flippedIndices[1];
+          const card1 = cards[idx1];
+          const card2 = cards[idx2];
+
+          if (card1.pairId === card2.pairId && idx1 !== idx2) {
+            // Pareja encontrada
+            card1.matched = true;
+            card2.matched = true;
+            matchedPairs++;
+            pairsFoundSpan.textContent = matchedPairs;
+            flippedIndices = [];
+            isLocked = false;
+            renderGrid();
+
+            if (matchedPairs === ICONS.length) {
+              winMessage.classList.add('show');
+            }
+          } else {
+            // No coinciden: voltear de nuevo después de un momento
+            setTimeout(() => {
+              card1.flipped = false;
+              card2.flipped = false;
+              flippedIndices = [];
+              isLocked = false;
+              renderGrid();
+            }, 700);
+          }
+        }
+      }
+
+      function openModal() {
+        modal.classList.add('active');
+        document.body.style.overflow = 'hidden';
+        initGame();
+      }
+
+      function closeModal() {
+        modal.classList.remove('active');
+        document.body.style.overflow = '';
+      }
+
+      // Eventos
+      hexTrigger.addEventListener('click', openModal);
+      closeBtn.addEventListener('click', closeModal);
+      modal.addEventListener('click', (e) => {
+        if (e.target === modal) closeModal();
+      });
+      restartBtn.addEventListener('click', initGame);
+
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && modal.classList.contains('active')) {
+          closeModal();
+        }
+      });
     })();
   </script>
 </body>
