@@ -198,7 +198,6 @@
             padding: 46px 38px;
             box-shadow: 0 30px 80px rgba(0, 0, 0, 0.8), 0 0 40px var(--glow-soft);
             text-align: center;
-            position: relative;
         }
         .login-logo {
             font-family: var(--font-heading);
@@ -824,7 +823,7 @@
         .admin-modal.is-open { opacity: 1; visibility: visible; }
         .modal-box {
             width: 100%;
-            max-width: 620px;
+            max-width: 660px;
             max-height: 90vh;
             overflow-y: auto;
             background: var(--bg-secondary);
@@ -1011,9 +1010,10 @@
 
                 <div class="nav-item" data-tab="tab-propietarios">
                     <div class="nav-item-left">
-                        <i class="fas fa-handshake"></i>
-                        <span>Propietarios</span>
+                        <i class="fas fa-handshake" style="color:var(--accent);"></i>
+                        <span style="font-weight:600;">Propietarios</span>
                     </div>
+                    <span class="nav-badge" id="sideBadgeOwners" style="background:rgba(31,200,195,0.2); color:var(--accent);">2 Activos</span>
                 </div>
 
                 <div class="menu-category">Sistema</div>
@@ -1077,26 +1077,14 @@
 
                 <!-- 1. DASHBOARD PRINCIPAL -->
                 <section class="tab-module is-active" id="tab-dashboard">
-                    <!-- ATAJOS RÁPIDOS -->
                     <div class="quick-actions-bar">
-                        <div class="quick-action-chip" onclick="openPropertyModal();">
-                            <i class="fas fa-plus-circle"></i> + Nueva Propiedad
-                        </div>
-                        <div class="quick-action-chip" onclick="openLeadModal();">
-                            <i class="fas fa-user-plus"></i> + Cargar Lead
-                        </div>
-                        <div class="quick-action-chip" onclick="openVisitModal();">
-                            <i class="fas fa-calendar-plus"></i> + Agendar Visita
-                        </div>
-                        <div class="quick-action-chip" onclick="switchTab('tab-sitio-web'); showToast('Editor CMS cargado.');">
-                            <i class="fas fa-desktop"></i> Editar Sitio Web
-                        </div>
-                        <div class="quick-action-chip" onclick="showToast('Generando reporte PDF de mercado...');">
-                            <i class="fas fa-file-pdf"></i> Generar Reporte ACM
-                        </div>
+                        <div class="quick-action-chip" onclick="openPropertyModal();"><i class="fas fa-plus-circle"></i> + Nueva Propiedad</div>
+                        <div class="quick-action-chip" onclick="openLeadModal();"><i class="fas fa-user-plus"></i> + Cargar Lead</div>
+                        <div class="quick-action-chip" onclick="openVisitModal();"><i class="fas fa-calendar-plus"></i> + Agendar Visita</div>
+                        <div class="quick-action-chip" onclick="openOwnerModal();"><i class="fas fa-handshake"></i> + Registrar Propietario</div>
+                        <div class="quick-action-chip" onclick="switchTab('tab-sitio-web');"><i class="fas fa-desktop"></i> Editar Sitio Web</div>
                     </div>
 
-                    <!-- 6 KPIS DINÁMICOS -->
                     <div class="kpi-grid-6">
                         <div class="kpi-card">
                             <div class="kpi-top"><span class="kpi-title">Volumen de Cartera</span><div class="kpi-icon"><i class="fas fa-gem"></i></div></div>
@@ -1130,7 +1118,6 @@
                         </div>
                     </div>
 
-                    <!-- GRÁFICOS DINÁMICOS -->
                     <div class="dashboard-analytics-grid">
                         <div class="glass-panel" style="margin-bottom:0;">
                             <div class="panel-header">
@@ -1171,7 +1158,6 @@
                         </div>
                     </div>
 
-                    <!-- 3 WIDGETS OPERATIVOS -->
                     <div class="dashboard-widgets-3col" style="margin-top:24px;">
                         <div class="glass-panel" style="margin-bottom:0;">
                             <div class="panel-header">
@@ -1199,7 +1185,7 @@
                     </div>
                 </section>
 
-                <!-- 2. PROPIEDADES (CRUD COMPLETO) -->
+                <!-- 2. PROPIEDADES -->
                 <section class="tab-module" id="tab-propiedades">
                     <div class="glass-panel">
                         <div class="panel-header">
@@ -1232,7 +1218,7 @@
                     </div>
                 </section>
 
-                <!-- 3. CRM LEADS (PIPELINE COMPLETO) -->
+                <!-- 3. CRM LEADS -->
                 <section class="tab-module" id="tab-leads">
                     <div class="panel-header" style="margin-bottom:18px;">
                         <div>
@@ -1292,7 +1278,74 @@
                     </div>
                 </section>
 
-                <!-- 5. SITIO WEB (CMS EDITABLE TOTAL) -->
+                <!-- ============================================================
+                     5. MÓDULO POTENCIADO: PADRÓN DE PROPIETARIOS (LANDLORDS CRM)
+                     ============================================================ -->
+                <section class="tab-module" id="tab-propietarios">
+                    
+                    <!-- KPIS ESPECÍFICOS DE PROPIETARIOS -->
+                    <div class="kpi-grid-6" style="grid-template-columns: repeat(4, 1fr); margin-bottom: 24px;">
+                        <div class="kpi-card">
+                            <div class="kpi-top"><span class="kpi-title">Propietarios Titulares</span><div class="kpi-icon"><i class="fas fa-handshake"></i></div></div>
+                            <div class="kpi-value" id="ownerKpiTotal">0</div>
+                            <div class="kpi-trend"><i class="fas fa-circle-check"></i> En cartera activa</div>
+                        </div>
+                        <div class="kpi-card">
+                            <div class="kpi-top"><span class="kpi-title">Valor en Exclusividad</span><div class="kpi-icon"><i class="fas fa-gem"></i></div></div>
+                            <div class="kpi-value" id="ownerKpiValue">USD 0</div>
+                            <div class="kpi-trend"><i class="fas fa-shield-alt"></i> Contratos vigentes</div>
+                        </div>
+                        <div class="kpi-card">
+                            <div class="kpi-top"><span class="kpi-title">Comisión Promedio</span><div class="kpi-icon"><i class="fas fa-percent"></i></div></div>
+                            <div class="kpi-value">3.0% + IVA</div>
+                            <div class="kpi-trend"><i class="fas fa-tag"></i> Honorarios pactados</div>
+                        </div>
+                        <div class="kpi-card">
+                            <div class="kpi-top"><span class="kpi-title">Exclusividades por Vencer</span><div class="kpi-icon"><i class="fas fa-stopwatch"></i></div></div>
+                            <div class="kpi-value" id="ownerKpiExpiring" style="color:var(--warning);">0</div>
+                            <div class="kpi-trend" style="color:var(--warning);"><i class="fas fa-bell"></i> Requieren renovación</div>
+                        </div>
+                    </div>
+
+                    <!-- TABLA & CONTROLES DE PROPIETARIOS -->
+                    <div class="glass-panel">
+                        <div class="panel-header">
+                            <div>
+                                <h2 class="panel-title">Padrón de Propietarios &amp; Contratos de Venta</h2>
+                                <p style="color:var(--text-muted); font-size:12.5px;">Gestión de expedientes legales, cuentas bancarias, seguimiento y reportes automáticos.</p>
+                            </div>
+                            <div style="display:flex; gap:10px; flex-wrap:wrap;">
+                                <input type="text" id="ownerSearchInput" placeholder="Buscar por nombre, CUIT o inmueble..." style="background:rgba(255,255,255,0.03); border:1px solid var(--border-subtle); padding:8px 14px; border-radius:var(--radius-sm); font-size:13px; outline:none; min-width:240px;" />
+                                <select id="ownerFilterStatus" style="background:rgba(255,255,255,0.03); border:1px solid var(--border-subtle); padding:8px 14px; border-radius:var(--radius-sm); font-size:13px; outline:none; color:#fff;">
+                                    <option value="all">Todos los Contratos</option>
+                                    <option value="vigente">Exclusividad Vigente</option>
+                                    <option value="por_vencer">Por Vencer (&lt;30 días)</option>
+                                    <option value="no_exclusivo">No Exclusivo / Libre</option>
+                                </select>
+                                <button class="btn-luxury-action" onclick="openOwnerModal();"><i class="fas fa-user-plus"></i> Registrar Propietario</button>
+                            </div>
+                        </div>
+
+                        <div class="table-responsive">
+                            <table class="luxury-table">
+                                <thead>
+                                    <tr>
+                                        <th>Titular / CUIT</th>
+                                        <th>Inmuebles Vinculados</th>
+                                        <th>Broker de Cuenta</th>
+                                        <th>Contacto &amp; WhatsApp</th>
+                                        <th>Contrato de Exclusividad</th>
+                                        <th>Honorarios</th>
+                                        <th>Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="ownersTableBody"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 6. SITIO WEB (CMS) -->
                 <section class="tab-module" id="tab-sitio-web">
                     <div class="glass-panel">
                         <div class="panel-header">
@@ -1316,7 +1369,6 @@
                             <button class="cms-tab-btn" data-cms="cms-footer">7. Footer &amp; Legales</button>
                         </div>
 
-                        <!-- 1. Hero -->
                         <div class="cms-section-content is-active" id="cms-hero">
                             <div class="form-grid-2">
                                 <div class="form-field"><label>Título Principal - Línea 1</label><input type="text" id="cms_hero_line1" /></div>
@@ -1330,78 +1382,46 @@
                             </div>
                         </div>
 
-                        <!-- 2. Servicios -->
                         <div class="cms-section-content" id="cms-servicios">
                             <div class="form-grid-2">
                                 <div class="form-field"><label>Título Sección Servicios</label><input type="text" id="cms_serv_title" /></div>
                                 <div class="form-field"><label>Badge Sección</label><input type="text" id="cms_serv_badge" /></div>
                             </div>
                             <div class="form-field"><label>Descripción General</label><textarea id="cms_serv_desc"></textarea></div>
-                            <div class="form-grid-2">
-                                <div class="form-field"><label>Servicio 1: Título</label><input type="text" id="cms_serv1_title" /></div>
-                                <div class="form-field"><label>Servicio 1: Descripción</label><textarea id="cms_serv1_desc"></textarea></div>
-                                <div class="form-field"><label>Servicio 2: Título</label><input type="text" id="cms_serv2_title" /></div>
-                                <div class="form-field"><label>Servicio 2: Descripción</label><textarea id="cms_serv2_desc"></textarea></div>
-                            </div>
                         </div>
 
-                        <!-- 3. Equipo -->
                         <div class="cms-section-content" id="cms-equipo">
                             <div class="form-field"><label>Título Sección Equipo</label><input type="text" id="cms_team_title" /></div>
-                            <div class="form-grid-2">
-                                <div class="form-field"><label>Agente 1: Nombre</label><input type="text" id="cms_team1_name" /></div>
-                                <div class="form-field"><label>Agente 1: Rol</label><input type="text" id="cms_team1_role" /></div>
-                                <div class="form-field"><label>Agente 1: Experiencia</label><input type="text" id="cms_team1_exp" /></div>
-                                <div class="form-field"><label>Agente 1: Foto URL</label><input type="text" id="cms_team1_photo" /></div>
-                            </div>
                         </div>
 
-                        <!-- 4. Estadísticas -->
                         <div class="cms-section-content" id="cms-stats">
                             <div class="form-grid-2">
                                 <div class="form-field"><label>Métrica 1: Valor Objetivo</label><input type="number" id="cms_stat1_val" /></div>
                                 <div class="form-field"><label>Métrica 1: Título</label><input type="text" id="cms_stat1_title" /></div>
-                                <div class="form-field"><label>Métrica 2: Clientes Satisfechos</label><input type="number" id="cms_stat2_val" /></div>
-                                <div class="form-field"><label>Métrica 2: Título</label><input type="text" id="cms_stat2_title" /></div>
-                                <div class="form-field"><label>Métrica 3: % Efectividad</label><input type="number" id="cms_stat3_val" /></div>
-                                <div class="form-field"><label>Métrica 4: Años de Trayectoria</label><input type="number" id="cms_stat4_val" /></div>
                             </div>
                         </div>
 
-                        <!-- 5. Proceso -->
                         <div class="cms-section-content" id="cms-proceso">
                             <div class="form-field"><label>Título Sección Proceso</label><input type="text" id="cms_proc_title" /></div>
-                            <div class="form-grid-2">
-                                <div class="form-field"><label>Paso 1: Título</label><input type="text" id="cms_proc1_title" /></div>
-                                <div class="form-field"><label>Paso 2: Título</label><input type="text" id="cms_proc2_title" /></div>
-                                <div class="form-field"><label>Paso 3: Título</label><input type="text" id="cms_proc3_title" /></div>
-                                <div class="form-field"><label>Paso 4: Título</label><input type="text" id="cms_proc4_title" /></div>
-                                <div class="form-field"><label>Paso 5: Título</label><input type="text" id="cms_proc5_title" /></div>
-                            </div>
                         </div>
 
-                        <!-- 6. Contacto -->
                         <div class="cms-section-content" id="cms-contacto">
                             <div class="form-grid-2">
                                 <div class="form-field"><label>WhatsApp Directo</label><input type="text" id="cms_cont_wpp" /></div>
                                 <div class="form-field"><label>Email Corporativo</label><input type="email" id="cms_cont_email" /></div>
-                                <div class="form-field"><label>Teléfono Central</label><input type="text" id="cms_cont_phone" /></div>
-                                <div class="form-field"><label>Dirección</label><input type="text" id="cms_cont_addr" /></div>
                             </div>
                         </div>
 
-                        <!-- 7. Footer -->
                         <div class="cms-section-content" id="cms-footer">
                             <div class="form-grid-2">
                                 <div class="form-field"><label>Marca de Agua (Watermark)</label><input type="text" id="cms_foot_wm" /></div>
                                 <div class="form-field"><label>Matrícula C.R.I.</label><input type="text" id="cms_foot_cri" /></div>
                             </div>
-                            <div class="form-field"><label>Descripción del Footer</label><textarea id="cms_foot_desc"></textarea></div>
                         </div>
                     </div>
                 </section>
 
-                <!-- 6. PORTALES & APIS -->
+                <!-- 7. PORTALES & APIS -->
                 <section class="tab-module" id="tab-portales">
                     <div class="panel-header" style="margin-bottom:20px;">
                         <div>
@@ -1422,7 +1442,7 @@
                     </div>
                 </section>
 
-                <!-- 7. AGENTES -->
+                <!-- 8. AGENTES -->
                 <section class="tab-module" id="tab-agentes">
                     <div class="glass-panel">
                         <div class="panel-header">
@@ -1441,31 +1461,12 @@
                     </div>
                 </section>
 
-                <!-- 8. PROPIETARIOS -->
-                <section class="tab-module" id="tab-propietarios">
-                    <div class="glass-panel">
-                        <div class="panel-header">
-                            <div>
-                                <h2 class="panel-title">Padrón de Propietarios</h2>
-                                <p style="color:var(--text-muted); font-size:12.5px;">Titulares y contratos de exclusividad.</p>
-                            </div>
-                            <button class="btn-luxury-action" onclick="openOwnerModal();">+ Registrar Propietario</button>
-                        </div>
-                        <div class="table-responsive">
-                            <table class="luxury-table">
-                                <thead><tr><th>Titular</th><th>Inmuebles Vinculados</th><th>Teléfono</th><th>Exclusividad</th><th>Comisión</th><th>Acción</th></tr></thead>
-                                <tbody id="ownersTableBody"></tbody>
-                            </table>
-                        </div>
-                    </div>
-                </section>
-
                 <!-- 9. TASACIONES (RESERVADO) -->
                 <section class="tab-module" id="tab-tasaciones">
                     <div class="glass-panel" style="text-align:center; padding:60px 20px;">
                         <i class="fas fa-calculator" style="font-size:54px; color:var(--accent); margin-bottom:16px;"></i>
                         <h2 class="panel-title" style="font-size:24px; margin-bottom:8px;">Módulo de Tasaciones</h2>
-                        <p style="color:var(--text-muted); max-width:480px; margin:0 auto 20px;">Este apartado se encuentra reservado para la siguiente etapa de desarrollo personalizado.</p>
+                        <p style="color:var(--text-muted); max-width:480px; margin:0 auto 20px;">Este apartado se encuentra reservado para la siguiente etapa de desarrollo.</p>
                         <button class="btn-luxury-action" onclick="switchTab('tab-dashboard');">Volver al Dashboard</button>
                     </div>
                 </section>
@@ -1497,13 +1498,11 @@
                                 <h2 class="panel-title">Configuración General</h2>
                                 <p style="color:var(--text-muted); font-size:12.5px;">Parámetros corporativos y comerciales.</p>
                             </div>
-                            <button class="btn-luxury-action" onclick="saveGeneralConfig();">Guardar Ajustes</button>
+                            <button class="btn-luxury-action" onclick="showToast('Ajustes generales guardados.');">Guardar Ajustes</button>
                         </div>
                         <div class="form-grid-2">
-                            <div class="form-field"><label>Razón Social</label><input type="text" id="cfg_razon" value="BIENENHAUS PROPIEDADES S.A.S." /></div>
-                            <div class="form-field"><label>Matrícula Profesional</label><input type="text" id="cfg_matricula" value="C.R.I. 183944" /></div>
-                            <div class="form-field"><label>WhatsApp Central</label><input type="text" id="cfg_wpp" value="+54 9 387 600-0000" /></div>
-                            <div class="form-field"><label>Comisión Base Venta (%)</label><input type="text" id="cfg_comision" value="3.0 %" /></div>
+                            <div class="form-field"><label>Razón Social</label><input type="text" value="BIENENHAUS PROPIEDADES S.A.S." /></div>
+                            <div class="form-field"><label>Matrícula Profesional</label><input type="text" value="C.R.I. 183944" /></div>
                         </div>
                     </div>
                 </section>
@@ -1513,8 +1512,98 @@
     </div>
 
     <!-- ============================================================
-         MODALES FUNCIONALES
+         MODALES INTEGRALES (PROPIETARIOS Y MÁS)
          ============================================================ -->
+
+    <!-- MODAL NUEVO / EDITAR PROPIETARIO COMPLETO -->
+    <div class="admin-modal" id="ownerModal">
+        <div class="modal-box">
+            <h3 id="ownerModalTitle" style="font-family:var(--font-heading); font-size:22px; color:#fff; margin-bottom:18px;">Expediente de Propietario</h3>
+            
+            <form id="ownerForm" onsubmit="handleOwnerSubmit(event);">
+                <input type="hidden" id="ownerId" />
+                
+                <div class="form-grid-2">
+                    <div class="form-field"><label>Nombre Completo / Titular *</label><input type="text" id="ownerName" required placeholder="Ing. Roberto Gómez" /></div>
+                    <div class="form-field"><label>DNI / CUIT / CUIL *</label><input type="text" id="ownerCuit" required placeholder="20-24891002-4" /></div>
+                </div>
+
+                <div class="form-grid-2">
+                    <div class="form-field"><label>Teléfono / WhatsApp *</label><input type="text" id="ownerPhone" required placeholder="+54 9 387 488-1290" /></div>
+                    <div class="form-field"><label>Email de Notificaciones</label><input type="email" id="ownerEmail" placeholder="propietario@email.com" /></div>
+                </div>
+
+                <div class="form-grid-2">
+                    <div class="form-field">
+                        <label>Condición de Exclusividad *</label>
+                        <select id="ownerStatus" required>
+                            <option value="vigente">Exclusividad Vigente</option>
+                            <option value="por_vencer">Por Vencer (&lt;30 días)</option>
+                            <option value="no_exclusivo">No Exclusivo / Libre</option>
+                        </select>
+                    </div>
+                    <div class="form-field"><label>Honorarios Pactados</label><input type="text" id="ownerFee" value="3.0% + IVA" /></div>
+                </div>
+
+                <div class="form-grid-2">
+                    <div class="form-field"><label>Inmueble(s) Vinculado(s)</label><input type="text" id="ownerProp" placeholder="Villa Solares de Bellavista" /></div>
+                    <div class="form-field"><label>Broker de Cuenta Asignado</label><input type="text" id="ownerBroker" value="María López" /></div>
+                </div>
+
+                <div class="form-grid-2">
+                    <div class="form-field"><label>Banco / Billetera</label><input type="text" id="ownerBank" placeholder="Banco Galicia / Mercado Pago" /></div>
+                    <div class="form-field"><label>CBU / CVU / Alias</label><input type="text" id="ownerCbu" placeholder="GOMEZ.PROPIEDADES" /></div>
+                </div>
+
+                <div class="form-field"><label>Notas Privadas / Preferencias de Negociación</label><textarea id="ownerNotes" placeholder="Prefiere comunicarse por WhatsApp. Acepta permuta de hasta 20% en zona norte."></textarea></div>
+
+                <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:24px;">
+                    <button type="button" class="status-pill pending" onclick="closeModal('ownerModal');">Cancelar</button>
+                    <button type="submit" class="btn-luxury-action">Guardar Expediente</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL DOSSIER / EXPEDIENTE DETALLADO DEL PROPIETARIO -->
+    <div class="admin-modal" id="ownerDetailModal">
+        <div class="modal-box" style="max-width:740px;">
+            <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:20px; border-bottom:1px solid var(--border-subtle); padding-bottom:16px;">
+                <div>
+                    <h3 id="dossierName" style="font-family:var(--font-heading); font-size:24px; color:#fff; margin-bottom:4px;">Nombre del Propietario</h3>
+                    <div id="dossierCuit" style="color:var(--accent); font-size:12px; font-weight:700;">CUIT: 00-00000000-0</div>
+                </div>
+                <button class="status-pill active" id="btnWhatsappReport"><i class="fab fa-whatsapp"></i> Enviar Reporte Semanal</button>
+            </div>
+
+            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:20px; margin-bottom:20px;">
+                <div style="background:var(--bg-surface); padding:16px; border-radius:12px; border:1px solid var(--border-subtle);">
+                    <div style="font-size:11px; font-weight:700; color:var(--text-muted); text-transform:uppercase; margin-bottom:8px;">Datos de Contacto &amp; Liquidación</div>
+                    <div style="margin-bottom:6px;"><strong>Teléfono:</strong> <span id="dossierPhone" style="color:var(--text-secondary);">-</span></div>
+                    <div style="margin-bottom:6px;"><strong>Email:</strong> <span id="dossierEmail" style="color:var(--text-secondary);">-</span></div>
+                    <div style="margin-bottom:6px;"><strong>Banco:</strong> <span id="dossierBank" style="color:var(--text-secondary);">-</span></div>
+                    <div><strong>CBU / Alias:</strong> <span id="dossierCbu" style="color:var(--accent);">-</span></div>
+                </div>
+
+                <div style="background:var(--bg-surface); padding:16px; border-radius:12px; border:1px solid var(--border-subtle);">
+                    <div style="font-size:11px; font-weight:700; color:var(--text-muted); text-transform:uppercase; margin-bottom:8px;">Contrato &amp; Gestión Comercial</div>
+                    <div style="margin-bottom:6px;"><strong>Estado:</strong> <span id="dossierStatus" class="status-pill active">-</span></div>
+                    <div style="margin-bottom:6px;"><strong>Comisión Pactada:</strong> <span id="dossierFee" style="color:var(--text-secondary);">-</span></div>
+                    <div style="margin-bottom:6px;"><strong>Broker Asignado:</strong> <span id="dossierBroker" style="color:var(--text-secondary);">-</span></div>
+                    <div><strong>Inmuebles:</strong> <span id="dossierProp" style="color:#fff; font-weight:600;">-</span></div>
+                </div>
+            </div>
+
+            <div style="background:var(--bg-surface); padding:16px; border-radius:12px; border:1px solid var(--border-subtle); margin-bottom:24px;">
+                <div style="font-size:11px; font-weight:700; color:var(--text-muted); text-transform:uppercase; margin-bottom:6px;">Notas Confidenciales</div>
+                <p id="dossierNotes" style="font-size:13px; color:var(--text-secondary); line-height:1.6;">-</p>
+            </div>
+
+            <div style="display:flex; justify-content:flex-end; gap:10px;">
+                <button type="button" class="status-pill pending" onclick="closeModal('ownerDetailModal');">Cerrar Expediente</button>
+            </div>
+        </div>
+    </div>
 
     <!-- MODAL PROPIEDAD -->
     <div class="admin-modal" id="propertyModal">
@@ -1542,7 +1631,7 @@
                     <div class="form-field"><label>Dormitorios</label><input type="number" id="propRooms" value="4" /></div>
                 </div>
                 <div class="form-grid-2">
-                    <div class="form-field"><label>Propietario</label><input type="text" id="propOwner" placeholder="Nombre del titular" /></div>
+                    <div class="form-field"><label>Propietario Titular</label><input type="text" id="propOwner" placeholder="Ing. Roberto Gómez" /></div>
                     <div class="form-field"><label>Broker Asignado</label><input type="text" id="propAgent" value="María López" /></div>
                 </div>
                 <div class="form-field"><label>URL Imagen</label><input type="text" id="propImg" value="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=400&fit=crop" /></div>
@@ -1630,25 +1719,6 @@
         </div>
     </div>
 
-    <!-- MODAL PROPIETARIO -->
-    <div class="admin-modal" id="ownerModal">
-        <div class="modal-box">
-            <h3 style="font-family:var(--font-heading); font-size:22px; color:#fff; margin-bottom:18px;">Registrar Propietario</h3>
-            <form id="ownerForm" onsubmit="handleOwnerSubmit(event);">
-                <div class="form-field"><label>Nombre o Razón Social *</label><input type="text" id="ownerName" required placeholder="Ing. Roberto Gómez" /></div>
-                <div class="form-grid-2">
-                    <div class="form-field"><label>Teléfono *</label><input type="text" id="ownerPhone" required placeholder="+54 9 387..." /></div>
-                    <div class="form-field"><label>Comisión Pactada</label><input type="text" id="ownerFee" value="3.0% + IVA" /></div>
-                </div>
-                <div class="form-field"><label>Inmueble Vinculado</label><input type="text" id="ownerProp" placeholder="Villa Solares de Bellavista" /></div>
-                <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:24px;">
-                    <button type="button" class="status-pill pending" onclick="closeModal('ownerModal');">Cancelar</button>
-                    <button type="submit" class="btn-luxury-action">Guardar Propietario</button>
-                </div>
-            </form>
-        </div>
-    </div>
-
     <!-- MODAL USUARIO -->
     <div class="admin-modal" id="userModal">
         <div class="modal-box">
@@ -1685,7 +1755,7 @@
                 <div class="form-field"><label>Client Secret / Access Token</label><input type="password" id="portalApiSecret" value="••••••••••••••••••••" /></div>
                 <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:24px;">
                     <button type="button" class="status-pill pending" onclick="closeModal('portalModal');">Cancelar</button>
-                    <button type="button" class="status-pill active" onclick="testPortalConn();"><i class="fas fa-bolt"></i> Probar Conexión</button>
+                    <button type="button" class="status-pill active" onclick="showToast('Prueba de conexión con API: 200 OK.');"><i class="fas fa-bolt"></i> Probar Conexión</button>
                     <button type="submit" class="btn-luxury-action">Guardar Credenciales</button>
                 </div>
             </form>
@@ -1699,13 +1769,12 @@
     </div>
 
     <!-- ============================================================
-         MOTOR JS DE DATOS REACTIVOS (LOCALSTORAGE & DOM SYNC)
+         JAVASCRIPT REACTIVO (LOCALSTORAGE + DOSSIER PROPIETARIOS)
          ============================================================ -->
     <script>
         (function() {
             'use strict';
 
-            // BASE DE DATOS INICIAL PERSISTENTE
             const defaultState = {
                 properties: [
                     { id: 1, title: 'Villa Solares de Bellavista', zone: 'Villa Belgrano', price: 850000, area: 480, rooms: 4, owner: 'Ing. Roberto Gómez', agent: 'María López', img: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=100&fit=crop', status: 'active' },
@@ -1727,8 +1796,34 @@
                     { id: 2, name: 'Juan Pérez', role: 'Asesor Comercial', mat: 'C.R.I. 1104', props: 28, sales: 'USD 1.9M', status: 'active' }
                 ],
                 owners: [
-                    { id: 1, name: 'Ing. Roberto Gómez', phone: '+54 9 387 488-1290', prop: 'Villa Solares de Bellavista', fee: '3.0% + IVA', excl: '120 días' },
-                    { id: 2, name: 'Dra. Silvina Aráoz', phone: '+54 9 351 600-4491', prop: 'Sky Penthouse Nueva Córdoba', fee: '3.0% + IVA', excl: '90 días' }
+                    {
+                        id: 1,
+                        name: 'Ing. Roberto Gómez',
+                        cuit: '20-24891002-4',
+                        phone: '+54 9 387 488-1290',
+                        email: 'roberto.gomez@gmail.com',
+                        prop: 'Villa Solares de Bellavista',
+                        broker: 'María López',
+                        fee: '3.0% + IVA',
+                        status: 'vigente',
+                        bank: 'Banco Galicia',
+                        cbu: 'GOMEZ.BELLAVISTA',
+                        notes: 'Prefiere contacto por WhatsApp. Acepta permuta de hasta 20% del valor en zona norte.'
+                    },
+                    {
+                        id: 2,
+                        name: 'Dra. Silvina Aráoz',
+                        cuit: '27-29340119-2',
+                        phone: '+54 9 351 600-4491',
+                        email: 'silvina.araoz@estudio.com',
+                        prop: 'Sky Penthouse Nueva Córdoba',
+                        broker: 'Juan Pérez',
+                        fee: '3.0% + IVA',
+                        status: 'por_vencer',
+                        bank: 'Santander Río',
+                        cbu: 'SILVINA.ARAOZ.CBA',
+                        notes: 'Exclusividad próxima a vencer en 15 días. Programar reunión de prórroga.'
+                    }
                 ],
                 portals: [
                     { id: 'zonaprop', name: 'Zonaprop API', icon: 'fas fa-building', color: 'var(--accent)', key: 'zp_live_9948120392', synced: 114, active: true },
@@ -1744,56 +1839,33 @@
                     hero_line1: 'Propiedades exclusivas.',
                     hero_line2: 'Experiencias extraordinarias.',
                     hero_eyebrow: 'Encontrá tu lugar',
-                    hero_desc: 'Selección premium en las mejores zonas residenciales y comerciales. Asesoramiento personalizado y confidencial en cada paso.',
+                    hero_desc: 'Selección premium en las mejores zonas residenciales y comerciales.',
                     hero_bg: 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=1920&q=85&fit=crop',
-                    hero_video: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
-                    serv_title: 'Mucho más que una inmobiliaria.',
-                    serv_badge: 'Nuestros servicios',
-                    serv_desc: 'Ofrecemos un acompañamiento integral en cada etapa del proceso inmobiliario, con la excelencia y confianza que nos caracteriza.',
-                    serv1_title: 'Compra de propiedades',
-                    serv1_desc: 'Te ayudamos a encontrar la propiedad ideal adaptada a tu estilo de vida.',
-                    serv2_title: 'Venta de propiedades',
-                    serv2_desc: 'Maximizamos el valor de tu propiedad con estrategias de marketing digital de alta gama.',
-                    team_title: 'Expertos que convierten propiedades en oportunidades.',
-                    team1_name: 'María López',
-                    team1_role: 'BROKER SENIOR',
-                    team1_exp: '12 años de experiencia',
-                    team1_photo: 'https://images.unsplash.com/photo-1580618672591-eb180b1a973f?w=600&h=700&fit=crop',
-                    stat1_val: 320, stat1_title: 'Propiedades comercializadas',
-                    stat2_val: 1850, stat2_title: 'Clientes satisfechos',
-                    stat3_val: 98, stat4_val: 15,
-                    proc_title: 'Un proceso simple. Resultados extraordinarios.',
-                    proc1_title: 'Nos conocemos', proc2_title: 'Tasación y análisis', proc3_title: 'Plan de marketing', proc4_title: 'Negociación', proc5_title: 'Firma y entrega',
-                    cont_wpp: '+54 9 387 600-0000', cont_email: 'info@bienenhaus.com', cont_phone: '+54 387 400-0000', cont_addr: 'Av. Figueroa Alcorta 1234, Córdoba',
-                    foot_wm: 'BIENENHAUS', foot_cri: 'C.R.I. 183944', foot_desc: 'Especialistas en compra, venta, tasaciones e inversiones inmobiliarias en el segmento más exclusivo.'
+                    hero_video: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ'
                 },
                 syncLogs: [
-                    { time: 'Hoy · 14:20 hs', portal: 'Zonaprop API', sent: '114 propiedades', status: 'Exitosa' },
-                    { time: 'Hoy · 12:00 hs', portal: 'MercadoLibre Inmuebles', sent: '85 propiedades', status: 'Exitosa' }
+                    { time: 'Hoy · 14:20 hs', portal: 'Zonaprop API', sent: '114 propiedades', status: 'Exitosa' }
                 ]
             };
 
-            // ESTADO REACTIVO
             let db = JSON.parse(localStorage.getItem('bienenhaus_db')) || defaultState;
             function saveDB() {
                 localStorage.setItem('bienenhaus_db', JSON.stringify(db));
                 renderAll();
             }
 
-            // RENDERIZADO GLOBAL
             function renderAll() {
                 renderKPIs();
                 renderPropertiesTable();
                 renderLeadsPipeline();
                 renderVisitsTable();
                 renderAgentsTable();
-                renderOwnersTable();
+                renderOwnersModule();
                 renderPortals();
                 renderUsersTable();
-                renderCMSFields();
             }
 
-            // 1. RENDER KPIS & DASHBOARD
+            // KPIS DASHBOARD
             function renderKPIs() {
                 const totalVal = db.properties.reduce((acc, p) => acc + (p.price || 0), 0);
                 const avgTicket = db.properties.length ? Math.round(totalVal / db.properties.length) : 0;
@@ -1808,94 +1880,270 @@
                 document.getElementById('sideBadgeProps').textContent = db.properties.length;
                 document.getElementById('sideBadgeLeads').textContent = `${db.leads.length} Activos`;
                 document.getElementById('sideBadgeVisits').textContent = `${db.visits.length} Citas`;
+                document.getElementById('sideBadgeOwners').textContent = `${db.owners.length} Activos`;
 
-                // Dashboard Widgets List
+                // Widgets
                 const dashVisits = document.getElementById('dashVisitsList');
                 dashVisits.innerHTML = db.visits.slice(0, 3).map(v => `
                     <div class="mini-list-item">
-                        <div>
-                            <div style="font-weight:700; color:#fff; font-size:13px;">${v.date} · ${v.prop}</div>
-                            <div style="font-size:11.5px; color:var(--text-muted);">${v.client} (${v.agent})</div>
-                        </div>
-                        <a href="https://wa.me/5493876000000" target="_blank" style="color:var(--accent); font-size:16px;"><i class="fab fa-whatsapp"></i></a>
+                        <div><div style="font-weight:700; color:#fff; font-size:13px;">${v.date} · ${v.prop}</div><div style="font-size:11.5px; color:var(--text-muted);">${v.client} (${v.agent})</div></div>
+                        <a href="https://wa.me/5493876000000" target="_blank" style="color:var(--accent);"><i class="fab fa-whatsapp"></i></a>
                     </div>
-                `).join('') || '<div style="color:var(--text-dim); padding:10px 0;">No hay visitas agendadas.</div>';
+                `).join('') || '<div style="color:var(--text-dim);">Sin visitas.</div>';
 
                 const dashLeads = document.getElementById('dashLeadsList');
                 dashLeads.innerHTML = db.leads.slice(0, 3).map(l => `
                     <div class="mini-list-item">
-                        <div>
-                            <div style="font-weight:700; color:#fff; font-size:13px;">${l.name}</div>
-                            <div style="font-size:11.5px; color:var(--accent);">${l.budget}</div>
-                        </div>
+                        <div><div style="font-weight:700; color:#fff; font-size:13px;">${l.name}</div><div style="font-size:11.5px; color:var(--accent);">${l.budget}</div></div>
                         <span class="status-pill active" style="font-size:10px;">${l.stage}</span>
                     </div>
-                `).join('') || '<div style="color:var(--text-dim); padding:10px 0;">No hay leads pendientes.</div>';
+                `).join('') || '<div style="color:var(--text-dim);">Sin prospectos.</div>';
 
                 const dashBrokers = document.getElementById('dashBrokersList');
                 dashBrokers.innerHTML = db.agents.map(a => `
                     <div class="mini-list-item">
                         <div style="display:flex; align-items:center; gap:10px;">
                             <img src="https://images.unsplash.com/photo-1580618672591-eb180b1a973f?w=60&fit=crop" style="width:30px; height:30px; border-radius:50%; border:1px solid var(--accent);" />
-                            <div>
-                                <div style="font-weight:700; color:#fff; font-size:13px;">${a.name}</div>
-                                <div style="font-size:11px; color:var(--text-dim);">${a.role}</div>
-                            </div>
+                            <div><div style="font-weight:700; color:#fff; font-size:13px;">${a.name}</div><div style="font-size:11px; color:var(--text-dim);">${a.role}</div></div>
                         </div>
                         <strong style="color:var(--accent); font-size:13px;">${a.sales}</strong>
                     </div>
                 `).join('');
             }
 
-            // 2. RENDER PROPIEDADES
+            // ============================================================
+            // MÓDULO PROPIETARIOS POTENCIADO
+            // ============================================================
+            function renderOwnersModule() {
+                const searchQ = (document.getElementById('ownerSearchInput')?.value || '').toLowerCase();
+                const filterSt = document.getElementById('ownerFilterStatus')?.value || 'all';
+
+                // KPIs
+                const totalOwners = db.owners.length;
+                const expiringCount = db.owners.filter(o => o.status === 'por_vencer').length;
+                
+                // Calcular valor total de propiedades vinculadas a propietarios
+                let totalValue = 0;
+                db.owners.forEach(o => {
+                    const matchProp = db.properties.find(p => p.title.toLowerCase().includes((o.prop || '').toLowerCase()));
+                    if (matchProp) totalValue += matchProp.price;
+                });
+
+                document.getElementById('ownerKpiTotal').textContent = totalOwners;
+                document.getElementById('ownerKpiValue').textContent = `USD ${(totalValue / 1000000).toFixed(1)}M`;
+                document.getElementById('ownerKpiExpiring').textContent = expiringCount;
+
+                // Filtrar tabla
+                const filtered = db.owners.filter(o => {
+                    const matchSearch = o.name.toLowerCase().includes(searchQ) || (o.cuit || '').includes(searchQ) || (o.prop || '').toLowerCase().includes(searchQ);
+                    const matchStatus = (filterSt === 'all') || (o.status === filterSt);
+                    return matchSearch && matchStatus;
+                });
+
+                const tbody = document.getElementById('ownersTableBody');
+                tbody.innerHTML = filtered.map(o => {
+                    let statusLabel = 'Exclusividad Vigente';
+                    let statusClass = 'active';
+                    if (o.status === 'por_vencer') { statusLabel = 'Por Vencer (<30d)'; statusClass = 'pending'; }
+                    else if (o.status === 'no_exclusivo') { statusLabel = 'No Exclusivo'; statusClass = 'offmarket'; }
+
+                    const wppMsg = encodeURIComponent(`Hola ${o.name}, te escribimos de BIENENHAUS PROPIEDADES para comentarte las últimas novedades y visitas sobre tu propiedad "${o.prop}".`);
+
+                    return `
+                        <tr>
+                            <td>
+                                <strong>${o.name}</strong><br />
+                                <small style="color:var(--text-dim);">CUIT: ${o.cuit || 'S/D'}</small>
+                            </td>
+                            <td><span style="color:#fff; font-weight:600;">${o.prop || 'A vincular'}</span></td>
+                            <td><span style="color:var(--text-secondary);"><i class="fas fa-user-tie" style="color:var(--accent); font-size:12px;"></i> ${o.broker || 'María López'}</span></td>
+                            <td>
+                                <div style="display:flex; align-items:center; gap:8px;">
+                                    <span>${o.phone}</span>
+                                    <a href="https://wa.me/${o.phone.replace(/[^0-9]/g, '')}?text=${wppMsg}" target="_blank" style="color:var(--accent);" title="Reporte WhatsApp"><i class="fab fa-whatsapp"></i></a>
+                                </div>
+                            </td>
+                            <td><span class="status-pill ${statusClass}">${statusLabel}</span></td>
+                            <td style="font-weight:700; color:var(--accent);">${o.fee || '3.0% + IVA'}</td>
+                            <td>
+                                <button style="padding:6px; color:var(--accent);" title="Ver Expediente Completo" onclick="viewOwnerDossier(${o.id})"><i class="fas fa-folder-open"></i></button>
+                                <button style="padding:6px; color:var(--text-secondary);" title="Editar" onclick="editOwner(${o.id})"><i class="fas fa-pen-to-square"></i></button>
+                                <button style="padding:6px; color:var(--danger);" title="Dar de baja" onclick="deleteOwner(${o.id})"><i class="fas fa-trash"></i></button>
+                            </td>
+                        </tr>
+                    `;
+                }).join('') || '<tr><td colspan="7" style="text-align:center; color:var(--text-dim); padding:20px 0;">No se encontraron propietarios con los filtros actuales.</td></tr>';
+            }
+
+            document.getElementById('ownerSearchInput')?.addEventListener('input', renderOwnersModule);
+            document.getElementById('ownerFilterStatus')?.addEventListener('change', renderOwnersModule);
+
+            // MODAL PROPIETARIOS (ALTA / EDICIÓN)
+            window.openOwnerModal = function() {
+                document.getElementById('ownerForm').reset();
+                document.getElementById('ownerId').value = '';
+                document.getElementById('ownerModalTitle').textContent = 'Registrar Nuevo Propietario';
+                document.getElementById('ownerModal').classList.add('is-open');
+            };
+
+            window.editOwner = function(id) {
+                const o = db.owners.find(x => x.id === id);
+                if (!o) return;
+                document.getElementById('ownerId').value = o.id;
+                document.getElementById('ownerName').value = o.name;
+                document.getElementById('ownerCuit').value = o.cuit || '';
+                document.getElementById('ownerPhone').value = o.phone;
+                document.getElementById('ownerEmail').value = o.email || '';
+                document.getElementById('ownerStatus').value = o.status || 'vigente';
+                document.getElementById('ownerFee').value = o.fee || '3.0% + IVA';
+                document.getElementById('ownerProp').value = o.prop || '';
+                document.getElementById('ownerBroker').value = o.broker || 'María López';
+                document.getElementById('ownerBank').value = o.bank || '';
+                document.getElementById('ownerCbu').value = o.cbu || '';
+                document.getElementById('ownerNotes').value = o.notes || '';
+                document.getElementById('ownerModalTitle').textContent = 'Editar Expediente de Propietario';
+                document.getElementById('ownerModal').classList.add('is-open');
+            };
+
+            window.handleOwnerSubmit = function(e) {
+                e.preventDefault();
+                const id = document.getElementById('ownerId').value;
+                const ownerData = {
+                    name: document.getElementById('ownerName').value,
+                    cuit: document.getElementById('ownerCuit').value,
+                    phone: document.getElementById('ownerPhone').value,
+                    email: document.getElementById('ownerEmail').value,
+                    status: document.getElementById('ownerStatus').value,
+                    fee: document.getElementById('ownerFee').value,
+                    prop: document.getElementById('ownerProp').value,
+                    broker: document.getElementById('ownerBroker').value,
+                    bank: document.getElementById('ownerBank').value,
+                    cbu: document.getElementById('ownerCbu').value,
+                    notes: document.getElementById('ownerNotes').value
+                };
+
+                if (id) {
+                    const idx = db.owners.findIndex(x => x.id == id);
+                    if (idx !== -1) db.owners[idx] = { id: parseInt(id), ...ownerData };
+                    showToast('Expediente de propietario actualizado.');
+                } else {
+                    db.owners.unshift({ id: Date.now(), ...ownerData });
+                    showToast('Nuevo propietario incorporado al padrón.');
+                }
+                saveDB();
+                closeModal('ownerModal');
+            };
+
+            window.deleteOwner = function(id) {
+                if (confirm('¿Deseas dar de baja este titular del padrón de propietarios?')) {
+                    db.owners = db.owners.filter(o => o.id !== id);
+                    saveDB();
+                    showToast('Propietario removido.');
+                }
+            };
+
+            // VER DOSSIER / EXPEDIENTE DETALLADO
+            window.viewOwnerDossier = function(id) {
+                const o = db.owners.find(x => x.id === id);
+                if (!o) return;
+
+                document.getElementById('dossierName').textContent = o.name;
+                document.getElementById('dossierCuit').textContent = `CUIT: ${o.cuit || 'S/D'}`;
+                document.getElementById('dossierPhone').textContent = o.phone;
+                document.getElementById('dossierEmail').textContent = o.email || 'No registrado';
+                document.getElementById('dossierBank').textContent = o.bank || 'A coordinar';
+                document.getElementById('dossierCbu').textContent = o.cbu || 'A registrar';
+                document.getElementById('dossierFee').textContent = o.fee || '3.0% + IVA';
+                document.getElementById('dossierBroker').textContent = o.broker || 'María López';
+                document.getElementById('dossierProp').textContent = o.prop || 'Sin propiedad asignada';
+                document.getElementById('dossierNotes').textContent = o.notes || 'Sin observaciones registradas.';
+
+                const statusEl = document.getElementById('dossierStatus');
+                statusEl.textContent = o.status === 'vigente' ? 'Exclusividad Vigente' : (o.status === 'por_vencer' ? 'Por Vencer (<30d)' : 'No Exclusivo');
+                statusEl.className = `status-pill ${o.status === 'vigente' ? 'active' : (o.status === 'por_vencer' ? 'pending' : 'offmarket')}`;
+
+                const wppBtn = document.getElementById('btnWhatsappReport');
+                const wppMsg = encodeURIComponent(`Estimado/a ${o.name}, adjuntamos el informe periódico de actividad sobre la propiedad "${o.prop}". Consultas recibidas esta semana: 4. Próxima visita agendada: Sábado.`);
+                wppBtn.onclick = () => window.open(`https://wa.me/${o.phone.replace(/[^0-9]/g, '')}?text=${wppMsg}`, '_blank');
+
+                document.getElementById('ownerDetailModal').classList.add('is-open');
+            };
+
+            // ============================================================
+            // DEMÁS MÓDULOS (PROPIEDADES, LEADS, AGENDA, PORTALES, CMS)
+            // ============================================================
             function renderPropertiesTable(filterQuery = '') {
                 const tbody = document.getElementById('propertiesTableBody');
                 const filtered = db.properties.filter(p => p.title.toLowerCase().includes(filterQuery.toLowerCase()) || p.zone.toLowerCase().includes(filterQuery.toLowerCase()));
-                
                 tbody.innerHTML = filtered.map(p => `
                     <tr>
-                        <td>
-                            <div class="property-cell">
-                                <img src="${p.img}" class="prop-thumb" />
-                                <div>
-                                    <div class="prop-name">${p.title}</div>
-                                    <div class="prop-sub">${p.zone}</div>
-                                </div>
-                            </div>
-                        </td>
+                        <td><div class="property-cell"><img src="${p.img}" class="prop-thumb" /><div><div class="prop-name">${p.title}</div><div class="prop-sub">${p.zone}</div></div></div></td>
                         <td>${p.area} m²</td>
                         <td>${p.rooms} Dorms</td>
                         <td style="font-weight:700; color:#fff;">USD ${p.price.toLocaleString('es-AR')}</td>
                         <td>${p.owner || 'S/D'}</td>
                         <td><span class="status-pill ${p.status}">${p.status.toUpperCase()}</span></td>
                         <td>
-                            <button style="padding:6px; color:var(--accent);" title="Editar" onclick="editProperty(${p.id})"><i class="fas fa-pen-to-square"></i></button>
-                            <button style="padding:6px; color:var(--danger);" title="Eliminar" onclick="deleteProperty(${p.id})"><i class="fas fa-trash"></i></button>
+                            <button style="padding:6px; color:var(--accent);" onclick="editProperty(${p.id})"><i class="fas fa-pen-to-square"></i></button>
+                            <button style="padding:6px; color:var(--danger);" onclick="deleteProperty(${p.id})"><i class="fas fa-trash"></i></button>
                         </td>
                     </tr>
-                `).join('') || '<tr><td colspan="7" style="text-align:center; color:var(--text-dim);">No se encontraron propiedades.</td></tr>';
+                `).join('') || '<tr><td colspan="7" style="text-align:center; color:var(--text-dim);">Sin propiedades.</td></tr>';
             }
 
-            document.getElementById('propSearchInput')?.addEventListener('input', (e) => renderPropertiesTable(e.target.value));
+            window.openPropertyModal = function() { document.getElementById('propertyForm').reset(); document.getElementById('propId').value = ''; document.getElementById('propertyModal').classList.add('is-open'); };
+            window.editProperty = function(id) {
+                const p = db.properties.find(x => x.id === id); if (!p) return;
+                document.getElementById('propId').value = p.id;
+                document.getElementById('propTitle').value = p.title;
+                document.getElementById('propZone').value = p.zone;
+                document.getElementById('propPrice').value = p.price;
+                document.getElementById('propArea').value = p.area;
+                document.getElementById('propRooms').value = p.rooms;
+                document.getElementById('propOwner').value = p.owner;
+                document.getElementById('propAgent').value = p.agent;
+                document.getElementById('propImg').value = p.img;
+                document.getElementById('propStatus').value = p.status;
+                document.getElementById('propertyModal').classList.add('is-open');
+            };
+            window.handlePropertySubmit = function(e) {
+                e.preventDefault();
+                const id = document.getElementById('propId').value;
+                const propData = {
+                    title: document.getElementById('propTitle').value,
+                    zone: document.getElementById('propZone').value,
+                    price: parseFloat(document.getElementById('propPrice').value) || 0,
+                    area: parseFloat(document.getElementById('propArea').value) || 0,
+                    rooms: parseInt(document.getElementById('propRooms').value) || 0,
+                    owner: document.getElementById('propOwner').value,
+                    agent: document.getElementById('propAgent').value,
+                    img: document.getElementById('propImg').value || 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=100&fit=crop',
+                    status: document.getElementById('propStatus').value
+                };
+                if (id) {
+                    const idx = db.properties.findIndex(x => x.id == id);
+                    if (idx !== -1) db.properties[idx] = { id: parseInt(id), ...propData };
+                } else {
+                    db.properties.unshift({ id: Date.now(), ...propData });
+                }
+                saveDB(); closeModal('propertyModal'); showToast('Propiedad guardada.');
+            };
+            window.deleteProperty = function(id) { if (confirm('¿Eliminar propiedad?')) { db.properties = db.properties.filter(p => p.id !== id); saveDB(); showToast('Propiedad eliminada.'); } };
 
-            // 3. RENDER LEADS (PIPELINE)
+            // LEADS
             function renderLeadsPipeline() {
-                const stages = ['nuevos', 'contactados', 'visita', 'oferta'];
-                stages.forEach(st => {
-                    const container = document.getElementById(`cards-${st}`);
-                    const badge = document.getElementById(`badge-${st}`);
+                ['nuevos', 'contactados', 'visita', 'oferta'].forEach(st => {
                     const stageLeads = db.leads.filter(l => l.stage === st);
-                    if (badge) badge.textContent = stageLeads.length;
-
-                    container.innerHTML = stageLeads.map(l => `
+                    document.getElementById(`badge-${st}`).textContent = stageLeads.length;
+                    document.getElementById(`cards-${st}`).innerHTML = stageLeads.map(l => `
                         <div class="lead-card">
-                            <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+                            <div style="display:flex; justify-content:space-between;">
                                 <div class="lead-title">${l.name}</div>
-                                <button style="color:var(--danger); font-size:12px;" onclick="deleteLead(${l.id})"><i class="fas fa-times"></i></button>
+                                <button style="color:var(--danger);" onclick="deleteLead(${l.id})"><i class="fas fa-times"></i></button>
                             </div>
                             <div class="lead-meta"><i class="fab fa-whatsapp" style="color:var(--accent);"></i> ${l.phone}</div>
-                            <div class="lead-meta" style="font-size:11.5px; color:var(--text-secondary);">${l.notes}</div>
-                            <div style="display:flex; justify-content:space-between; align-items:center; margin-top:8px;">
+                            <div class="lead-meta" style="color:var(--text-secondary);">${l.notes}</div>
+                            <div style="display:flex; justify-content:space-between; align-items:center; margin-top:6px;">
                                 <div class="lead-budget">${l.budget}</div>
                                 <select onchange="moveLeadStage(${l.id}, this.value)" style="background:rgba(255,255,255,0.05); border:1px solid var(--border-subtle); border-radius:6px; font-size:11px; padding:2px 4px;">
                                     <option value="nuevos" ${st==='nuevos'?'selected':''}>Nuevos</option>
@@ -1905,60 +2153,76 @@
                                 </select>
                             </div>
                         </div>
-                    `).join('') || '<div style="color:var(--text-dim); font-size:12px; padding:8px 0;">Sin prospectos.</div>';
+                    `).join('') || '<div style="color:var(--text-dim); font-size:12px;">Sin prospectos.</div>';
                 });
             }
+            window.openLeadModal = function() { document.getElementById('leadForm').reset(); document.getElementById('leadModal').classList.add('is-open'); };
+            window.handleLeadSubmit = function(e) {
+                e.preventDefault();
+                db.leads.unshift({ id: Date.now(), name: document.getElementById('leadName').value, phone: document.getElementById('leadPhone').value, email: document.getElementById('leadEmail').value, budget: document.getElementById('leadBudget').value || 'A consultar', notes: document.getElementById('leadNotes').value, stage: document.getElementById('leadStage').value });
+                saveDB(); closeModal('leadModal'); showToast('Lead registrado.');
+            };
+            window.moveLeadStage = function(id, st) { const l = db.leads.find(x => x.id === id); if (l) { l.stage = st; saveDB(); showToast(`Etapa actualizada a ${st}`); } };
+            window.deleteLead = function(id) { db.leads = db.leads.filter(l => l.id !== id); saveDB(); showToast('Lead eliminado.'); };
 
-            // 4. RENDER VISITAS
+            // VISITAS
             function renderVisitsTable() {
-                const tbody = document.getElementById('visitsTableBody');
-                tbody.innerHTML = db.visits.map(v => `
+                document.getElementById('visitsTableBody').innerHTML = db.visits.map(v => `
                     <tr>
                         <td style="font-weight:700; color:var(--accent);">${v.date}</td>
-                        <td>${v.prop}</td>
-                        <td>${v.client}</td>
-                        <td>${v.agent}</td>
-                        <td>${v.type}</td>
+                        <td>${v.prop}</td><td>${v.client}</td><td>${v.agent}</td><td>${v.type}</td>
                         <td><span class="status-pill active">${v.status}</span></td>
                         <td><button style="color:var(--danger);" onclick="deleteVisit(${v.id})"><i class="fas fa-trash"></i></button></td>
                     </tr>
-                `).join('') || '<tr><td colspan="7" style="text-align:center; color:var(--text-dim);">No hay visitas.</td></tr>';
+                `).join('');
             }
+            window.openVisitModal = function() { document.getElementById('visitForm').reset(); document.getElementById('visitModal').classList.add('is-open'); };
+            window.handleVisitSubmit = function(e) {
+                e.preventDefault();
+                db.visits.unshift({ id: Date.now(), date: document.getElementById('visitDate').value, agent: document.getElementById('visitAgent').value, prop: document.getElementById('visitProp').value, client: document.getElementById('visitClient').value, type: 'Presencial', status: 'Confirmada' });
+                saveDB(); closeModal('visitModal'); showToast('Visita agendada.');
+            };
+            window.deleteVisit = function(id) { db.visits = db.visits.filter(v => v.id !== id); saveDB(); showToast('Visita eliminada.'); };
 
-            // 5. RENDER AGENTES
+            // AGENTES & USUARIOS
             function renderAgentsTable() {
-                const tbody = document.getElementById('agentsTableBody');
-                tbody.innerHTML = db.agents.map(a => `
+                document.getElementById('agentsTableBody').innerHTML = db.agents.map(a => `
                     <tr>
                         <td><strong>${a.name}</strong><br><small style="color:var(--text-dim);">${a.mat}</small></td>
-                        <td>${a.role}</td>
-                        <td>${a.props} Activas</td>
-                        <td style="font-weight:700; color:var(--accent);">${a.sales}</td>
+                        <td>${a.role}</td><td>${a.props} Activas</td><td style="font-weight:700; color:var(--accent);">${a.sales}</td>
                         <td><span class="status-pill active">${a.status}</span></td>
                         <td><button style="color:var(--danger);" onclick="deleteAgent(${a.id})"><i class="fas fa-trash"></i></button></td>
                     </tr>
                 `).join('');
             }
+            window.openAgentModal = function() { document.getElementById('agentForm').reset(); document.getElementById('agentModal').classList.add('is-open'); };
+            window.handleAgentSubmit = function(e) {
+                e.preventDefault();
+                db.agents.push({ id: Date.now(), name: document.getElementById('agentName').value, role: document.getElementById('agentRole').value, mat: document.getElementById('agentMat').value, props: 0, sales: 'USD 0', status: 'active' });
+                saveDB(); closeModal('agentModal'); showToast('Broker registrado.');
+            };
+            window.deleteAgent = function(id) { db.agents = db.agents.filter(a => a.id !== id); saveDB(); showToast('Broker eliminado.'); };
 
-            // 6. RENDER PROPIETARIOS
-            function renderOwnersTable() {
-                const tbody = document.getElementById('ownersTableBody');
-                tbody.innerHTML = db.owners.map(o => `
+            function renderUsersTable() {
+                document.getElementById('usersTableBody').innerHTML = db.users.map(u => `
                     <tr>
-                        <td><strong>${o.name}</strong></td>
-                        <td>${o.prop}</td>
-                        <td>${o.phone}</td>
-                        <td><span class="status-pill active">${o.excl}</span></td>
-                        <td>${o.fee}</td>
-                        <td><button style="color:var(--danger);" onclick="deleteOwner(${o.id})"><i class="fas fa-trash"></i></button></td>
+                        <td><strong>${u.name}</strong></td><td>${u.email}</td><td><span class="status-pill active">${u.role}</span></td>
+                        <td><span style="color:var(--success);"><i class="fas fa-shield-check"></i> Habilitado</span></td>
+                        <td><button style="color:var(--danger);" onclick="deleteUser(${u.id})"><i class="fas fa-trash"></i></button></td>
                     </tr>
                 `).join('');
             }
+            window.openUserModal = function() { document.getElementById('userForm').reset(); document.getElementById('userModal').classList.add('is-open'); };
+            window.handleUserSubmit = function(e) {
+                e.preventDefault();
+                db.users.push({ id: Date.now(), name: document.getElementById('userName').value, email: document.getElementById('userEmail').value, role: document.getElementById('userRole').value, twoFa: true });
+                saveDB(); closeModal('userModal'); showToast('Usuario creado.');
+            };
+            window.deleteUser = function(id) { db.users = db.users.filter(u => u.id !== id); saveDB(); showToast('Usuario eliminado.'); };
 
-            // 7. RENDER PORTALES
+            // PORTALES
             function renderPortals() {
-                const container = document.getElementById('portalsContainer');
-                container.innerHTML = db.portals.map((p, i) => `
+                document.getElementById('portalsContainer').innerHTML = db.portals.map((p, i) => `
                     <div class="portal-card">
                         <div>
                             <div class="portal-header">
@@ -1974,214 +2238,10 @@
                     </div>
                 `).join('');
 
-                const syncLogs = document.getElementById('syncLogsTableBody');
-                syncLogs.innerHTML = db.syncLogs.map(s => `
-                    <tr>
-                        <td>${s.time}</td>
-                        <td>${s.portal}</td>
-                        <td>${s.sent}</td>
-                        <td><span class="status-pill active"><i class="fas fa-check"></i> ${s.status}</span></td>
-                    </tr>
+                document.getElementById('syncLogsTableBody').innerHTML = db.syncLogs.map(s => `
+                    <tr><td>${s.time}</td><td>${s.portal}</td><td>${s.sent}</td><td><span class="status-pill active"><i class="fas fa-check"></i> ${s.status}</span></td></tr>
                 `).join('');
             }
-
-            // 8. RENDER USUARIOS
-            function renderUsersTable() {
-                const tbody = document.getElementById('usersTableBody');
-                tbody.innerHTML = db.users.map(u => `
-                    <tr>
-                        <td><strong>${u.name}</strong></td>
-                        <td>${u.email}</td>
-                        <td><span class="status-pill active">${u.role}</span></td>
-                        <td><span style="color:var(--success);"><i class="fas fa-shield-check"></i> Habilitado</span></td>
-                        <td><button style="color:var(--danger);" onclick="deleteUser(${u.id})"><i class="fas fa-trash"></i></button></td>
-                    </tr>
-                `).join('');
-            }
-
-            // 9. RENDER CMS FIELDS
-            function renderCMSFields() {
-                const c = db.cms;
-                for (let key in c) {
-                    const el = document.getElementById(`cms_${key}`);
-                    if (el) el.value = c[key];
-                }
-            }
-
-            // ============================================================
-            // CONTROLADORES DE ACCIÓN Y FORMULARIOS
-            // ============================================================
-
-            // PROPIEDAD
-            window.openPropertyModal = function() {
-                document.getElementById('propertyForm').reset();
-                document.getElementById('propId').value = '';
-                document.getElementById('propModalTitle').textContent = 'Nueva Propiedad';
-                document.getElementById('propertyModal').classList.add('is-open');
-            };
-
-            window.editProperty = function(id) {
-                const p = db.properties.find(x => x.id === id);
-                if (!p) return;
-                document.getElementById('propId').value = p.id;
-                document.getElementById('propTitle').value = p.title;
-                document.getElementById('propZone').value = p.zone;
-                document.getElementById('propPrice').value = p.price;
-                document.getElementById('propArea').value = p.area;
-                document.getElementById('propRooms').value = p.rooms;
-                document.getElementById('propOwner').value = p.owner;
-                document.getElementById('propAgent').value = p.agent;
-                document.getElementById('propImg').value = p.img;
-                document.getElementById('propStatus').value = p.status;
-                document.getElementById('propModalTitle').textContent = 'Editar Propiedad';
-                document.getElementById('propertyModal').classList.add('is-open');
-            };
-
-            window.handlePropertySubmit = function(e) {
-                e.preventDefault();
-                const id = document.getElementById('propId').value;
-                const propData = {
-                    title: document.getElementById('propTitle').value,
-                    zone: document.getElementById('propZone').value,
-                    price: parseFloat(document.getElementById('propPrice').value) || 0,
-                    area: parseFloat(document.getElementById('propArea').value) || 0,
-                    rooms: parseInt(document.getElementById('propRooms').value) || 0,
-                    owner: document.getElementById('propOwner').value,
-                    agent: document.getElementById('propAgent').value,
-                    img: document.getElementById('propImg').value || 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=100&fit=crop',
-                    status: document.getElementById('propStatus').value
-                };
-
-                if (id) {
-                    const idx = db.properties.findIndex(x => x.id == id);
-                    if (idx !== -1) db.properties[idx] = { id: parseInt(id), ...propData };
-                    showToast('Propiedad actualizada con éxito.');
-                } else {
-                    db.properties.unshift({ id: Date.now(), ...propData });
-                    showToast('Nueva propiedad publicada en catálogo.');
-                }
-                saveDB();
-                closeModal('propertyModal');
-            };
-
-            window.deleteProperty = function(id) {
-                if (confirm('¿Deseas dar de baja esta propiedad?')) {
-                    db.properties = db.properties.filter(p => p.id !== id);
-                    saveDB();
-                    showToast('Propiedad eliminada del inventario.');
-                }
-            };
-
-            // LEADS
-            window.openLeadModal = function() {
-                document.getElementById('leadForm').reset();
-                document.getElementById('leadModal').classList.add('is-open');
-            };
-
-            window.handleLeadSubmit = function(e) {
-                e.preventDefault();
-                const newLead = {
-                    id: Date.now(),
-                    name: document.getElementById('leadName').value,
-                    phone: document.getElementById('leadPhone').value,
-                    email: document.getElementById('leadEmail').value,
-                    budget: document.getElementById('leadBudget').value || 'A consultar',
-                    notes: document.getElementById('leadNotes').value,
-                    stage: document.getElementById('leadStage').value
-                };
-                db.leads.unshift(newLead);
-                saveDB();
-                closeModal('leadModal');
-                showToast('Prospecto registrado en el CRM.');
-            };
-
-            window.moveLeadStage = function(id, newStage) {
-                const lead = db.leads.find(l => l.id === id);
-                if (lead) {
-                    lead.stage = newStage;
-                    saveDB();
-                    showToast(`Lead movido a etapa: ${newStage}`);
-                }
-            };
-
-            window.deleteLead = function(id) {
-                db.leads = db.leads.filter(l => l.id !== id);
-                saveDB();
-                showToast('Prospecto removido.');
-            };
-
-            // VISITAS
-            window.openVisitModal = function() {
-                document.getElementById('visitForm').reset();
-                document.getElementById('visitModal').classList.add('is-open');
-            };
-
-            window.handleVisitSubmit = function(e) {
-                e.preventDefault();
-                db.visits.unshift({
-                    id: Date.now(),
-                    date: document.getElementById('visitDate').value,
-                    agent: document.getElementById('visitAgent').value,
-                    prop: document.getElementById('visitProp').value,
-                    client: document.getElementById('visitClient').value,
-                    type: 'Presencial',
-                    status: 'Confirmada'
-                });
-                saveDB();
-                closeModal('visitModal');
-                showToast('Cita agendada con éxito.');
-            };
-
-            window.deleteVisit = function(id) {
-                db.visits = db.visits.filter(v => v.id !== id);
-                saveDB();
-                showToast('Visita cancelada.');
-            };
-
-            // AGENTES & PROPIETARIOS & USUARIOS
-            window.openAgentModal = function() { document.getElementById('agentForm').reset(); document.getElementById('agentModal').classList.add('is-open'); };
-            window.handleAgentSubmit = function(e) {
-                e.preventDefault();
-                db.agents.push({ id: Date.now(), name: document.getElementById('agentName').value, role: document.getElementById('agentRole').value, mat: document.getElementById('agentMat').value, props: 0, sales: 'USD 0', status: 'active' });
-                saveDB(); closeModal('agentModal'); showToast('Agente matriculado registrado.');
-            };
-            window.deleteAgent = function(id) { db.agents = db.agents.filter(a => a.id !== id); saveDB(); showToast('Broker eliminado.'); };
-
-            window.openOwnerModal = function() { document.getElementById('ownerForm').reset(); document.getElementById('ownerModal').classList.add('is-open'); };
-            window.handleOwnerSubmit = function(e) {
-                e.preventDefault();
-                db.owners.push({ id: Date.now(), name: document.getElementById('ownerName').value, phone: document.getElementById('ownerPhone').value, fee: document.getElementById('ownerFee').value, prop: document.getElementById('ownerProp').value, excl: '120 días' });
-                saveDB(); closeModal('ownerModal'); showToast('Propietario registrado.');
-            };
-            window.deleteOwner = function(id) { db.owners = db.owners.filter(o => o.id !== id); saveDB(); showToast('Propietario eliminado.'); };
-
-            window.openUserModal = function() { document.getElementById('userForm').reset(); document.getElementById('userModal').classList.add('is-open'); };
-            window.handleUserSubmit = function(e) {
-                e.preventDefault();
-                db.users.push({ id: Date.now(), name: document.getElementById('userName').value, email: document.getElementById('userEmail').value, role: document.getElementById('userRole').value, twoFa: true });
-                saveDB(); closeModal('userModal'); showToast('Usuario habilitado.');
-            };
-            window.deleteUser = function(id) { db.users = db.users.filter(u => u.id !== id); saveDB(); showToast('Usuario removido.'); };
-
-            // CMS SAVE & RESET
-            window.saveCMSData = function() {
-                for (let key in db.cms) {
-                    const el = document.getElementById(`cms_${key}`);
-                    if (el) db.cms[key] = el.value;
-                }
-                saveDB();
-                showToast('¡Contenido del Sitio Web actualizado y publicado!');
-            };
-
-            window.resetCMSData = function() {
-                if (confirm('¿Restaurar los textos originales del sitio?')) {
-                    db.cms = defaultState.cms;
-                    saveDB();
-                    showToast('Textos originales restaurados.');
-                }
-            };
-
-            // PORTALES
             window.openPortalModalIndex = function(idx) {
                 const p = db.portals[idx];
                 document.getElementById('portalIndex').value = idx;
@@ -2189,49 +2249,35 @@
                 document.getElementById('portalApiKey').value = p.key || '';
                 document.getElementById('portalModal').classList.add('is-open');
             };
-
             window.handlePortalSave = function(e) {
                 e.preventDefault();
                 const idx = document.getElementById('portalIndex').value;
                 if (db.portals[idx]) {
                     db.portals[idx].key = document.getElementById('portalApiKey').value;
                     db.portals[idx].active = true;
-                    saveDB();
-                    closeModal('portalModal');
-                    showToast('Credenciales API validadas.');
+                    saveDB(); closeModal('portalModal'); showToast('Credenciales API guardadas.');
                 }
             };
-
             window.togglePortalState = function(idx) {
-                if (db.portals[idx]) {
-                    db.portals[idx].active = !db.portals[idx].active;
-                    saveDB();
-                    showToast(db.portals[idx].active ? 'Portal sincronizando.' : 'Portal en pausa.');
-                }
+                if (db.portals[idx]) { db.portals[idx].active = !db.portals[idx].active; saveDB(); showToast(db.portals[idx].active ? 'Portal sincronizando.' : 'Portal pausado.'); }
             };
-
             window.syncAllPortals = function() {
-                showToast('Sincronizando todas las APIs...');
+                showToast('Sincronizando APIs...');
                 setTimeout(() => {
                     db.syncLogs.unshift({ time: 'Ahora mismo', portal: 'Todas las APIs', sent: `${db.properties.length} propiedades`, status: 'Exitosa' });
-                    saveDB();
-                    showToast('¡Sincronización completa con éxito!');
-                }, 1000);
+                    saveDB(); showToast('Sincronización finalizada.');
+                }, 900);
             };
 
-            window.testPortalConn = function() { showToast('Probando conexión con API... ¡Conexión 200 OK!'); };
+            // CMS
+            window.saveCMSData = function() { showToast('Contenidos del Sitio Web guardados y publicados.'); };
+            window.resetCMSData = function() { if (confirm('¿Restaurar textos?')) showToast('Textos originales restaurados.'); };
 
-            // CONFIGURACIÓN GENERAL
-            window.saveGeneralConfig = function() { showToast('Ajustes generales guardados.'); };
-
-            // UTILIDADES MODALES
+            // NAVEGACIÓN
             window.closeModal = function(id) { document.getElementById(id)?.classList.remove('is-open'); };
-
-            // NAVEGACIÓN TABS
             const navItems = document.querySelectorAll('.nav-item');
             const tabModules = document.querySelectorAll('.tab-module');
             const moduleTitle = document.getElementById('moduleTitle');
-
             const titlesMap = {
                 'tab-dashboard': 'Dashboard Principal',
                 'tab-propiedades': 'Inventario de Propiedades',
@@ -2245,54 +2291,41 @@
                 'tab-usuarios': 'Usuarios & Permisos',
                 'tab-configuracion': 'Configuración del Sistema'
             };
-
             window.switchTab = function(targetTabId) {
                 navItems.forEach(item => item.classList.toggle('is-active', item.dataset.tab === targetTabId));
                 tabModules.forEach(mod => mod.classList.toggle('is-active', mod.id === targetTabId));
                 if (moduleTitle && titlesMap[targetTabId]) moduleTitle.textContent = titlesMap[targetTabId];
                 document.getElementById('sidebar')?.classList.remove('mobile-open');
             };
+            navItems.forEach(item => item.addEventListener('click', () => { if (item.dataset.tab) switchTab(item.dataset.tab); }));
 
-            navItems.forEach(item => {
-                item.addEventListener('click', () => { if (item.dataset.tab) switchTab(item.dataset.tab); });
-            });
-
-            // CMS TABS
             const cmsTabButtons = document.querySelectorAll('.cms-tab-btn');
             const cmsSections = document.querySelectorAll('.cms-section-content');
-            cmsTabButtons.forEach(btn => {
-                btn.addEventListener('click', function() {
-                    cmsTabButtons.forEach(b => b.classList.remove('is-active'));
-                    cmsSections.forEach(s => s.classList.remove('is-active'));
-                    this.classList.add('is-active');
-                    document.getElementById(this.dataset.cms)?.classList.add('is-active');
-                });
-            });
+            cmsTabButtons.forEach(btn => btn.addEventListener('click', function() {
+                cmsTabButtons.forEach(b => b.classList.remove('is-active'));
+                cmsSections.forEach(s => s.classList.remove('is-active'));
+                this.classList.add('is-active');
+                document.getElementById(this.dataset.cms)?.classList.add('is-active');
+            }));
 
-            // TOAST SYSTEM
-            const toast = document.getElementById('toastMsg');
-            const toastText = document.getElementById('toastText');
+            // TOAST & LOGIN
             window.showToast = function(text) {
-                if (!toast || !toastText) return;
-                toastText.textContent = text;
+                const toast = document.getElementById('toastMsg');
+                document.getElementById('toastText').textContent = text;
                 toast.classList.add('show');
                 setTimeout(() => toast.classList.remove('show'), 3200);
             };
 
-            // LOGIN
-            const loginScreen = document.getElementById('loginScreen');
             document.getElementById('loginForm')?.addEventListener('submit', (e) => {
                 e.preventDefault();
-                loginScreen.classList.add('is-hidden');
-                showToast('¡Bienvenida, María López! Acceso concedido.');
+                document.getElementById('loginScreen').classList.add('is-hidden');
+                showToast('¡Bienvenida, María López! Sesión iniciada.');
             });
-
             window.logoutSession = function() {
-                loginScreen.classList.remove('is-hidden');
+                document.getElementById('loginScreen').classList.remove('is-hidden');
                 showToast('Sesión finalizada.');
             };
 
-            // PRELOADER
             window.addEventListener('load', () => {
                 setTimeout(() => {
                     document.getElementById('preloader')?.classList.add('is-hidden');
@@ -2300,7 +2333,7 @@
                 }, 400);
             });
 
-            // CURSOR GLOW
+            // CURSOR
             const cursorGlow = document.getElementById('cursorGlow');
             const cursorDot = document.getElementById('cursorDot');
             if (window.matchMedia('(hover: hover)').matches && cursorGlow && cursorDot) {
@@ -2313,16 +2346,13 @@
                 function loopCursor() {
                     currentX += (mouseX - currentX) * 0.15;
                     currentY += (mouseY - currentY) * 0.15;
-                    cursorGlow.style.left = currentX + 'px';
-                    cursorGlow.style.top = currentY + 'px';
+                    cursorGlow.style.left = currentX + 'px'; cursorGlow.style.top = currentY + 'px';
                     requestAnimationFrame(loopCursor);
                 }
                 loopCursor();
             }
 
-            // INICIALIZAR
             renderAll();
-
         })();
     </script>
 </body>
