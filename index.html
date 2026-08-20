@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>BIENENHAUS PROPIEDADES | Panel de Control & CRM Luxury</title>
+    <title>BIENENHAUS PROPIEDADES | Panel de Control &amp; CMS Luxury</title>
     <meta name="theme-color" content="#020305" />
 
     <!-- Favicon -->
@@ -19,17 +19,17 @@
 
     <style>
         /* ============================================================
-           VARIABLES & DESIGN SYSTEM (BIENENHAUS ADMIN LUXURY)
+           SISTEMA DE VARIABLES LUXURY
            ============================================================ */
         :root {
             --bg-void: #020305;
             --bg-primary: #05070A;
             --bg-secondary: #0A0D12;
             --bg-surface: #0E131A;
-            --card-bg: rgba(14, 19, 26, 0.85);
+            --card-bg: rgba(14, 19, 26, 0.82);
             --card-hover: rgba(20, 27, 38, 0.95);
 
-            --border-subtle: rgba(255, 255, 255, 0.07);
+            --border-subtle: rgba(255, 255, 255, 0.08);
             --border-accent: rgba(31, 200, 195, 0.35);
             --border-input: rgba(255, 255, 255, 0.1);
 
@@ -52,7 +52,7 @@
             --font-body: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
 
             --sidebar-width: 280px;
-            --header-height: 80px;
+            --header-height: 82px;
             --radius-sm: 10px;
             --radius-md: 18px;
             --radius-lg: 24px;
@@ -81,42 +81,229 @@
             -webkit-font-smoothing: antialiased;
         }
 
-        a {
-            color: inherit;
-            text-decoration: none;
+        body.is-loading {
+            overflow: hidden;
         }
 
-        button {
-            border: none;
-            background: transparent;
-            font-family: inherit;
-            cursor: pointer;
-            color: inherit;
+        a { color: inherit; text-decoration: none; }
+        button { border: none; background: transparent; font-family: inherit; cursor: pointer; color: inherit; }
+        input, select, textarea { font-family: inherit; color: inherit; }
+
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: var(--bg-void); }
+        ::-webkit-scrollbar-thumb { background: rgba(31, 200, 195, 0.3); border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--accent); }
+
+        /* ============================================================
+           PRELOADER, CURSOR & GRAIN FX
+           ============================================================ */
+        .preloader {
+            position: fixed;
+            inset: 0;
+            z-index: 1000000;
+            background: #020305;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 0.7s var(--ease-out), visibility 0.7s;
+        }
+        .preloader.is-hidden {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+        .preloader-mark {
+            font-family: var(--font-heading);
+            font-size: 22px;
+            letter-spacing: 8px;
+            text-transform: uppercase;
+            color: var(--text-main);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+        }
+        .preloader-bar {
+            width: 190px;
+            height: 2px;
+            background: rgba(255, 255, 255, 0.08);
+            overflow: hidden;
+            position: relative;
+            border-radius: 2px;
+        }
+        .preloader-bar::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            width: 50%;
+            background: linear-gradient(90deg, transparent, var(--accent), var(--glow), var(--accent), transparent);
+            animation: preloaderSweep 1.2s ease-in-out infinite;
+        }
+        @keyframes preloaderSweep {
+            0% { transform: translateX(-120%); }
+            100% { transform: translateX(320%); }
         }
 
-        input, select, textarea {
-            font-family: inherit;
-            color: inherit;
+        .grain-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 99990;
+            pointer-events: none;
+            opacity: 0.032;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
         }
 
-        /* Scrollbar */
-        ::-webkit-scrollbar {
+        .cursor-glow, .cursor-dot {
+            position: fixed;
+            top: 0;
+            left: 0;
+            pointer-events: none;
+            z-index: 999998;
+            transform: translate(-50%, -50%);
+            border-radius: 50%;
+            transition: opacity 0.3s ease;
+        }
+        .cursor-glow {
+            width: 32px;
+            height: 32px;
+            border: 1px solid var(--accent);
+            background: radial-gradient(circle, rgba(31, 200, 195, 0.15) 0%, transparent 70%);
+            transition: width 0.25s var(--ease-out), height 0.25s var(--ease-out), background 0.25s, border-color 0.25s;
+            opacity: 0;
+        }
+        .cursor-dot {
             width: 6px;
             height: 6px;
-        }
-        ::-webkit-scrollbar-track {
-            background: var(--bg-void);
-        }
-        ::-webkit-scrollbar-thumb {
-            background: rgba(31, 200, 195, 0.3);
-            border-radius: 4px;
-        }
-        ::-webkit-scrollbar-thumb:hover {
             background: var(--accent);
+            box-shadow: 0 0 10px var(--accent);
+            opacity: 0;
+        }
+        .cursor-glow.is-visible, .cursor-dot.is-visible { opacity: 1; }
+        .cursor-glow.is-hover {
+            width: 64px;
+            height: 64px;
+            background: rgba(31, 200, 195, 0.25);
+            border-color: var(--glow);
+        }
+        @media (hover: none), (pointer: coarse) {
+            .cursor-glow, .cursor-dot { display: none; }
         }
 
         /* ============================================================
-           LAYOUT PRINCIPAL (SIDEBAR + MAIN CONTENT)
+           PANTALLA DE LOGIN (MODO LUXURY)
+           ============================================================ */
+        .login-screen {
+            position: fixed;
+            inset: 0;
+            z-index: 99999;
+            background: radial-gradient(circle at 50% 30%, rgba(31, 200, 195, 0.08) 0%, transparent 60%),
+                        radial-gradient(circle at 10% 90%, rgba(31, 200, 195, 0.04) 0%, transparent 50%),
+                        var(--bg-void);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+            transition: opacity 0.6s var(--ease-out), visibility 0.6s;
+        }
+        .login-screen.is-hidden {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+        .login-card {
+            width: 100%;
+            max-width: 440px;
+            background: rgba(13, 17, 23, 0.88);
+            backdrop-filter: blur(28px);
+            border: 1px solid var(--border-accent);
+            border-radius: var(--radius-lg);
+            padding: 46px 38px;
+            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.8), 0 0 40px var(--glow-soft);
+            text-align: center;
+            position: relative;
+            animation: fadeIn 0.5s var(--ease-out);
+        }
+        .login-logo {
+            font-family: var(--font-heading);
+            font-size: 26px;
+            font-weight: 700;
+            letter-spacing: 2.5px;
+            color: #fff;
+            margin-bottom: 2px;
+        }
+        .login-sub {
+            font-size: 10px;
+            font-weight: 700;
+            color: var(--accent);
+            letter-spacing: 3.5px;
+            text-transform: uppercase;
+            margin-bottom: 30px;
+        }
+        .login-input-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+        .login-input-group label {
+            display: block;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-muted);
+            margin-bottom: 8px;
+        }
+        .login-input-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+        .login-input-wrapper i {
+            position: absolute;
+            left: 16px;
+            color: var(--text-dim);
+            font-size: 14px;
+        }
+        .login-input-wrapper input {
+            width: 100%;
+            height: 48px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border-input);
+            border-radius: 14px;
+            padding: 0 16px 0 44px;
+            color: #fff;
+            font-size: 13.5px;
+            outline: none;
+            transition: var(--transition);
+        }
+        .login-input-wrapper input:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 20px var(--glow-soft);
+        }
+        .btn-login {
+            width: 100%;
+            height: 52px;
+            background: linear-gradient(135deg, var(--accent), #159A95);
+            border-radius: 14px;
+            color: var(--bg-void);
+            font-size: 13px;
+            font-weight: 700;
+            letter-spacing: 1.2px;
+            text-transform: uppercase;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            transition: var(--transition);
+            box-shadow: 0 0 30px var(--glow-soft);
+            margin-top: 14px;
+        }
+        .btn-login:hover {
+            box-shadow: 0 0 40px var(--glow-strong);
+            transform: translateY(-2px);
+        }
+
+        /* ============================================================
+           LAYOUT DEL PANEL (SIDEBAR + MAIN)
            ============================================================ */
         .app-layout {
             display: flex;
@@ -126,12 +313,10 @@
                         var(--bg-void);
         }
 
-        /* ============================================================
-           SIDEBAR
-           ============================================================ */
+        /* Sidebar */
         .sidebar {
             width: var(--sidebar-width);
-            background: rgba(5, 7, 10, 0.95);
+            background: rgba(5, 7, 10, 0.96);
             backdrop-filter: blur(20px);
             border-right: 1px solid var(--border-subtle);
             display: flex;
@@ -151,11 +336,6 @@
             justify-content: space-between;
             border-bottom: 1px solid var(--border-subtle);
         }
-
-        .brand-logo {
-            display: flex;
-            flex-direction: column;
-        }
         .brand-title {
             font-family: var(--font-heading);
             font-size: 20px;
@@ -172,7 +352,6 @@
             text-transform: uppercase;
             margin-top: 4px;
         }
-
         .badge-env {
             font-size: 10px;
             font-weight: 700;
@@ -187,12 +366,11 @@
         .sidebar-menu {
             flex: 1;
             overflow-y: auto;
-            padding: 20px 14px;
+            padding: 18px 14px;
             display: flex;
             flex-direction: column;
             gap: 4px;
         }
-
         .menu-category {
             font-size: 11px;
             font-weight: 700;
@@ -201,7 +379,6 @@
             color: var(--text-dim);
             padding: 14px 12px 6px;
         }
-
         .nav-item {
             display: flex;
             align-items: center;
@@ -215,13 +392,11 @@
             cursor: pointer;
             position: relative;
         }
-
         .nav-item-left {
             display: flex;
             align-items: center;
             gap: 14px;
         }
-
         .nav-item i {
             font-size: 16px;
             width: 20px;
@@ -229,24 +404,18 @@
             color: var(--text-dim);
             transition: color 0.2s;
         }
-
         .nav-item:hover {
             color: #fff;
             background: rgba(255, 255, 255, 0.03);
         }
-        .nav-item:hover i {
-            color: var(--accent);
-        }
-
+        .nav-item:hover i { color: var(--accent); }
         .nav-item.is-active {
             background: linear-gradient(90deg, rgba(31, 200, 195, 0.15) 0%, rgba(31, 200, 195, 0.03) 100%);
             color: #fff;
             font-weight: 600;
             border-left: 3px solid var(--accent);
         }
-        .nav-item.is-active i {
-            color: var(--accent);
-        }
+        .nav-item.is-active i { color: var(--accent); }
 
         .nav-badge {
             font-size: 11px;
@@ -267,7 +436,6 @@
             border-top: 1px solid var(--border-subtle);
             background: rgba(0, 0, 0, 0.3);
         }
-
         .user-card {
             display: flex;
             align-items: center;
@@ -290,19 +458,10 @@
             margin-left: 10px;
             flex: 1;
         }
-        .user-name {
-            font-size: 13px;
-            font-weight: 600;
-            color: #fff;
-        }
-        .user-role {
-            font-size: 11px;
-            color: var(--accent);
-        }
+        .user-name { font-size: 13px; font-weight: 600; color: #fff; }
+        .user-role { font-size: 11px; color: var(--accent); }
 
-        /* ============================================================
-           CONTENIDO PRINCIPAL
-           ============================================================ */
+        /* Main Wrapper */
         .main-wrapper {
             margin-left: var(--sidebar-width);
             flex: 1;
@@ -311,10 +470,10 @@
             min-height: 100vh;
         }
 
-        /* Header Superior */
+        /* Topbar Header */
         .topbar {
             height: var(--header-height);
-            background: rgba(5, 7, 10, 0.75);
+            background: rgba(5, 7, 10, 0.78);
             backdrop-filter: blur(20px);
             border-bottom: 1px solid var(--border-subtle);
             position: sticky;
@@ -325,20 +484,17 @@
             justify-content: space-between;
             padding: 0 36px;
         }
-
         .topbar-left {
             display: flex;
             align-items: center;
             gap: 20px;
         }
-
         .page-title {
             font-family: var(--font-heading);
             font-size: 24px;
             font-weight: 700;
             color: #fff;
         }
-
         .quick-search {
             position: relative;
             width: 320px;
@@ -366,16 +522,14 @@
             border-color: var(--accent);
             box-shadow: 0 0 20px var(--glow-soft);
         }
-
         .topbar-right {
             display: flex;
             align-items: center;
             gap: 16px;
         }
-
         .btn-luxury-action {
             height: 42px;
-            padding: 0 20px;
+            padding: 0 22px;
             border-radius: var(--radius-btn);
             background: linear-gradient(135deg, var(--accent), #159A95);
             color: var(--bg-void);
@@ -393,7 +547,6 @@
             box-shadow: 0 0 30px var(--glow-soft);
             transform: translateY(-2px);
         }
-
         .icon-badge-btn {
             width: 40px;
             height: 40px;
@@ -422,12 +575,11 @@
             box-shadow: 0 0 8px var(--accent);
         }
 
-        /* Contenido Dinámico de Módulos */
+        /* Contenido Dinámico */
         .content-area {
             padding: 36px;
             flex: 1;
         }
-
         .tab-module {
             display: none;
             animation: fadeIn 0.4s var(--ease-out) forwards;
@@ -436,13 +588,8 @@
             display: block;
         }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
         /* ============================================================
-           COMPONENTES: KPIS & CARDS
+           COMPONENTES Y CARDS
            ============================================================ */
         .kpi-grid {
             display: grid;
@@ -450,7 +597,6 @@
             gap: 22px;
             margin-bottom: 32px;
         }
-
         .kpi-card {
             background: var(--card-bg);
             border: 1px solid var(--border-subtle);
@@ -465,7 +611,6 @@
             border-color: var(--border-accent);
             box-shadow: 0 16px 40px rgba(0, 0, 0, 0.4), 0 0 25px var(--glow-soft);
         }
-
         .kpi-top {
             display: flex;
             justify-content: space-between;
@@ -490,7 +635,6 @@
             justify-content: center;
             font-size: 16px;
         }
-
         .kpi-value {
             font-family: var(--font-heading);
             font-size: 32px;
@@ -499,7 +643,6 @@
             line-height: 1;
             margin-bottom: 8px;
         }
-
         .kpi-trend {
             font-size: 12px;
             display: flex;
@@ -508,11 +651,7 @@
             color: var(--success);
             font-weight: 600;
         }
-        .kpi-trend.down { color: var(--danger); }
 
-        /* ============================================================
-           TABLAS LUXURY
-           ============================================================ */
         .glass-panel {
             background: var(--card-bg);
             border: 1px solid var(--border-subtle);
@@ -521,7 +660,6 @@
             margin-bottom: 28px;
             box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
         }
-
         .panel-header {
             display: flex;
             justify-content: space-between;
@@ -541,13 +679,11 @@
             width: 100%;
             overflow-x: auto;
         }
-
         .luxury-table {
             width: 100%;
             border-collapse: collapse;
             text-align: left;
         }
-
         .luxury-table th {
             padding: 14px 18px;
             font-size: 11px;
@@ -557,7 +693,6 @@
             color: var(--text-dim);
             border-bottom: 1px solid var(--border-subtle);
         }
-
         .luxury-table td {
             padding: 16px 18px;
             font-size: 13.5px;
@@ -565,7 +700,6 @@
             border-bottom: 1px solid var(--border-subtle);
             vertical-align: middle;
         }
-
         .luxury-table tr:hover td {
             background: rgba(255, 255, 255, 0.02);
             color: #fff;
@@ -582,14 +716,8 @@
             border-radius: 8px;
             object-fit: cover;
         }
-        .prop-name {
-            font-weight: 600;
-            color: #fff;
-        }
-        .prop-sub {
-            font-size: 11.5px;
-            color: var(--text-dim);
-        }
+        .prop-name { font-weight: 600; color: #fff; }
+        .prop-sub { font-size: 11.5px; color: var(--text-dim); }
 
         .status-pill {
             display: inline-flex;
@@ -621,23 +749,6 @@
             background: rgba(239, 68, 68, 0.12);
             color: var(--danger);
             border: 1px solid rgba(239, 68, 68, 0.3);
-        }
-
-        .portal-sync-icons {
-            display: flex;
-            gap: 6px;
-        }
-        .portal-dot {
-            width: 22px;
-            height: 22px;
-            border-radius: 6px;
-            background: rgba(255, 255, 255, 0.05);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 10px;
-            color: var(--accent);
-            border: 1px solid var(--border-subtle);
         }
 
         /* ============================================================
@@ -674,37 +785,102 @@
             border-radius: var(--radius-sm);
             padding: 16px;
             transition: var(--transition);
-            cursor: grab;
+            cursor: pointer;
         }
         .lead-card:hover {
             border-color: var(--border-accent);
             transform: translateY(-2px);
             box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
         }
-        .lead-title {
-            font-weight: 700;
-            color: #fff;
-            font-size: 14px;
-            margin-bottom: 4px;
+        .lead-title { font-weight: 700; color: #fff; font-size: 14px; margin-bottom: 4px; }
+        .lead-meta { font-size: 12px; color: var(--text-muted); margin-bottom: 10px; }
+        .lead-budget { font-size: 13px; font-weight: 700; color: var(--accent); }
+
+        /* ============================================================
+           MÓDULO SITIO WEB (CMS EDITABLE)
+           ============================================================ */
+        .cms-nav-tabs {
+            display: flex;
+            gap: 8px;
+            border-bottom: 1px solid var(--border-subtle);
+            padding-bottom: 14px;
+            margin-bottom: 28px;
+            overflow-x: auto;
         }
-        .lead-meta {
-            font-size: 12px;
-            color: var(--text-muted);
-            margin-bottom: 10px;
-        }
-        .lead-budget {
+        .cms-tab-btn {
+            padding: 10px 20px;
+            border-radius: var(--radius-btn);
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border-subtle);
+            color: var(--text-secondary);
             font-size: 13px;
+            font-weight: 600;
+            transition: var(--transition);
+            white-space: nowrap;
+        }
+        .cms-tab-btn.is-active, .cms-tab-btn:hover {
+            background: var(--accent);
+            border-color: var(--accent);
+            color: var(--bg-void);
             font-weight: 700;
-            color: var(--accent);
+            box-shadow: 0 0 20px var(--glow-soft);
+        }
+
+        .cms-section-content {
+            display: none;
+            animation: fadeIn 0.3s var(--ease-out);
+        }
+        .cms-section-content.is-active {
+            display: block;
+        }
+
+        .form-grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 22px;
+            margin-bottom: 22px;
+        }
+        .form-field {
+            margin-bottom: 18px;
+        }
+        .form-field label {
+            display: flex;
+            justify-content: space-between;
+            font-size: 11.5px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-muted);
+            margin-bottom: 8px;
+        }
+        .form-field input, .form-field textarea, .form-field select {
+            width: 100%;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border-input);
+            border-radius: 12px;
+            padding: 12px 16px;
+            color: #fff;
+            font-size: 13.5px;
+            outline: none;
+            transition: var(--transition);
+        }
+        .form-field textarea {
+            min-height: 90px;
+            resize: vertical;
+        }
+        .form-field input:focus, .form-field textarea:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 20px var(--glow-soft);
         }
 
         /* ============================================================
-           PORTALES INTEGRATION CARDS
+           MÓDULO PORTALES (CONFIGURACIÓN & CONEXIÓN)
            ============================================================ */
         .portals-grid {
             display: grid;
-            grid-template-columns: repeat(3, 1fr);
+            grid-template-columns: repeat(2, 1fr);
             gap: 24px;
+            margin-bottom: 30px;
         }
         .portal-card {
             background: var(--card-bg);
@@ -718,18 +894,21 @@
         }
         .portal-card:hover {
             border-color: var(--border-accent);
-            transform: translateY(-4px);
+            transform: translateY(-3px);
         }
         .portal-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 16px;
+            margin-bottom: 14px;
         }
         .portal-logo-title {
             font-size: 18px;
             font-weight: 700;
             color: #fff;
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
         .toggle-switch {
             position: relative;
@@ -740,9 +919,7 @@
             cursor: pointer;
             transition: background 0.3s;
         }
-        .toggle-switch.is-active {
-            background: var(--accent);
-        }
+        .toggle-switch.is-active { background: var(--accent); }
         .toggle-switch::after {
             content: '';
             position: absolute;
@@ -754,13 +931,39 @@
             background: #fff;
             transition: transform 0.3s;
         }
-        .toggle-switch.is-active::after {
-            transform: translateX(20px);
+        .toggle-switch.is-active::after { transform: translateX(20px); }
+
+        /* Modal de Configuración de API */
+        .admin-modal {
+            position: fixed;
+            inset: 0;
+            z-index: 100000;
+            background: rgba(2, 3, 5, 0.88);
+            backdrop-filter: blur(20px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            opacity: 0;
+            visibility: hidden;
+            transition: var(--transition);
+        }
+        .admin-modal.is-open {
+            opacity: 1;
+            visibility: visible;
+        }
+        .modal-box {
+            width: 100%;
+            max-width: 560px;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-accent);
+            border-radius: var(--radius-lg);
+            padding: 36px;
+            box-shadow: 0 40px 100px rgba(0, 0, 0, 0.8);
+            position: relative;
         }
 
-        /* ============================================================
-           NOTIFICACIÓN TOAST
-           ============================================================ */
+        /* Notificación Toast */
         .toast-msg {
             position: fixed;
             bottom: 30px;
@@ -778,7 +981,7 @@
             transform: translateY(100px);
             opacity: 0;
             transition: var(--transition);
-            z-index: 99999;
+            z-index: 999999;
         }
         .toast-msg.show {
             transform: translateY(0);
@@ -791,7 +994,8 @@
         @media (max-width: 1200px) {
             .kpi-grid { grid-template-columns: repeat(2, 1fr); }
             .leads-pipeline { grid-template-columns: repeat(2, 1fr); }
-            .portals-grid { grid-template-columns: repeat(2, 1fr); }
+            .portals-grid { grid-template-columns: 1fr; }
+            .form-grid-2 { grid-template-columns: 1fr; }
         }
 
         @media (max-width: 900px) {
@@ -800,20 +1004,73 @@
             .main-wrapper { margin-left: 0; }
             .kpi-grid { grid-template-columns: 1fr; }
             .leads-pipeline { grid-template-columns: 1fr; }
-            .portals-grid { grid-template-columns: 1fr; }
             .quick-search { display: none; }
             .topbar { padding: 0 20px; }
             .content-area { padding: 20px; }
         }
     </style>
 </head>
-<body>
+<body class="is-loading">
 
+    <!-- PRELOADER LUXURY -->
+    <div class="preloader" id="preloader">
+        <div class="preloader-mark">
+            <span>BIENENHAUS</span>
+            <div class="preloader-bar"></div>
+        </div>
+    </div>
+
+    <!-- OVERLAYS GLOBALES -->
+    <div class="grain-overlay"></div>
+    <div class="cursor-glow" id="cursorGlow"></div>
+    <div class="cursor-dot" id="cursorDot"></div>
+
+    <!-- ============================================================
+         PANTALLA DE LOGIN (AUTENTICACIÓN)
+         ============================================================ -->
+    <div class="login-screen" id="loginScreen">
+        <div class="login-card">
+            <div class="login-logo">BIENENHAUS</div>
+            <div class="login-sub">ACCESO ADMINISTRATIVO &amp; CMS</div>
+
+            <form id="loginForm">
+                <div class="login-input-group">
+                    <label>Correo Corporativo</label>
+                    <div class="login-input-wrapper">
+                        <i class="fas fa-envelope"></i>
+                        <input type="email" id="loginEmail" value="admin@bienenhaus.com" required />
+                    </div>
+                </div>
+
+                <div class="login-input-group">
+                    <label>Contraseña de Seguridad</label>
+                    <div class="login-input-wrapper">
+                        <i class="fas fa-lock"></i>
+                        <input type="password" id="loginPassword" value="••••••••••••" required />
+                    </div>
+                </div>
+
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; font-size:12px; color:var(--text-muted);">
+                    <label style="display:flex; align-items:center; gap:6px; cursor:pointer;">
+                        <input type="checkbox" checked style="accent-color:var(--accent);" /> Recordar credenciales
+                    </label>
+                    <a href="#" onclick="showToast('Enlace de recuperación enviado al correo.');" style="color:var(--accent);">¿Olvidaste la clave?</a>
+                </div>
+
+                <button type="submit" class="btn-login" id="btnLoginSubmit">
+                    <span>Ingresar al Panel</span>
+                    <i class="fas fa-arrow-right"></i>
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- ============================================================
+         LAYOUT PRINCIPAL DEL PANEL
+         ============================================================ -->
     <div class="app-layout">
 
-        <!-- ============================================================
-             SIDEBAR DE NAVEGACIÓN
-             ============================================================ -->
+        <!-- SIDEBAR -->
         <aside class="sidebar" id="sidebar">
             <div class="sidebar-brand">
                 <div class="brand-logo">
@@ -832,7 +1089,7 @@
                     </div>
                 </div>
 
-                <div class="menu-category">Gestión Inmobiliaria</div>
+                <div class="menu-category">Gestión &amp; CRM</div>
                 <div class="nav-item" data-tab="tab-propiedades">
                     <div class="nav-item-left">
                         <i class="fas fa-home"></i>
@@ -844,7 +1101,7 @@
                 <div class="nav-item" data-tab="tab-leads">
                     <div class="nav-item-left">
                         <i class="fas fa-users-line"></i>
-                        <span>Leads &amp; Clientes</span>
+                        <span>Leads &amp; CRM</span>
                     </div>
                     <span class="nav-badge">14 Nuevos</span>
                 </div>
@@ -865,7 +1122,23 @@
                     <span class="nav-badge">3 Pend.</span>
                 </div>
 
-                <div class="menu-category">Relaciones &amp; Red</div>
+                <div class="menu-category">Red &amp; Difusión</div>
+                <div class="nav-item" data-tab="tab-sitio-web">
+                    <div class="nav-item-left">
+                        <i class="fas fa-desktop" style="color:var(--accent);"></i>
+                        <span style="font-weight:700; color:#fff;">Sitio Web (CMS)</span>
+                    </div>
+                    <span class="nav-badge" style="background:rgba(31,200,195,0.2); color:var(--accent);">Live</span>
+                </div>
+
+                <div class="nav-item" data-tab="tab-portales">
+                    <div class="nav-item-left">
+                        <i class="fas fa-globe"></i>
+                        <span>Portales &amp; APIs</span>
+                    </div>
+                    <span class="nav-badge" style="color:var(--success);"><i class="fas fa-circle" style="font-size:8px;"></i> Sync</span>
+                </div>
+
                 <div class="nav-item" data-tab="tab-agentes">
                     <div class="nav-item-left">
                         <i class="fas fa-user-tie"></i>
@@ -878,14 +1151,6 @@
                         <i class="fas fa-handshake"></i>
                         <span>Propietarios</span>
                     </div>
-                </div>
-
-                <div class="nav-item" data-tab="tab-portales">
-                    <div class="nav-item-left">
-                        <i class="fas fa-globe"></i>
-                        <span>Portales Inmobiliarios</span>
-                    </div>
-                    <span class="nav-badge" style="color:var(--success);"><i class="fas fa-circle" style="font-size:8px;"></i> Sync</span>
                 </div>
 
                 <div class="menu-category">Sistema</div>
@@ -911,16 +1176,14 @@
                         <span class="user-name">María López</span>
                         <span class="user-role">Broker Senior · Admin</span>
                     </div>
-                    <button style="color:var(--text-dim); padding:6px;" title="Cerrar sesión" onclick="showToast('Sesión segura de administrador.')">
+                    <button style="color:var(--text-dim); padding:6px;" title="Cerrar sesión" onclick="logoutSession();">
                         <i class="fas fa-arrow-right-from-bracket"></i>
                     </button>
                 </div>
             </div>
         </aside>
 
-        <!-- ============================================================
-             MAIN CONTENT WRAPPER
-             ============================================================ -->
+        <!-- MAIN WRAPPER -->
         <main class="main-wrapper">
 
             <!-- Topbar Header -->
@@ -937,24 +1200,25 @@
                 </div>
 
                 <div class="topbar-right">
-                    <button class="icon-badge-btn" title="Notificaciones" onclick="showToast('Tienes 4 nuevos leads de Zonaprop.')">
+                    <button class="icon-badge-btn" title="Notificaciones" onclick="showToast('Tienes 4 nuevos leads de Zonaprop.');">
                         <i class="far fa-bell"></i>
                         <span class="ping-badge"></span>
                     </button>
 
-                    <button class="btn-luxury-action" onclick="showToast('Formulario modal de alta abierto.')">
+                    <button class="btn-luxury-action" onclick="showToast('Abriendo creador de nueva propiedad...');">
                         <i class="fas fa-plus"></i>
                         <span>Nueva Propiedad</span>
                     </button>
                 </div>
             </header>
 
-            <!-- Área de Contenido con Módulos Conmutables -->
+            <!-- CONTENIDO DE MÓDULOS -->
             <div class="content-area">
 
-                <!-- 1. MÓDULO: DASHBOARD -->
+                <!-- ============================================================
+                     1. MÓDULO: DASHBOARD
+                     ============================================================ -->
                 <section class="tab-module is-active" id="tab-dashboard">
-                    <!-- KPI Cards -->
                     <div class="kpi-grid">
                         <div class="kpi-card">
                             <div class="kpi-top">
@@ -993,7 +1257,6 @@
                         </div>
                     </div>
 
-                    <!-- Panel de Últimas Propiedades & Leads Recientes -->
                     <div class="glass-panel">
                         <div class="panel-header">
                             <div>
@@ -1011,7 +1274,6 @@
                                         <th>Tipo / Ubicación</th>
                                         <th>Valor de Lista</th>
                                         <th>Agente a Cargo</th>
-                                        <th>Sincronización</th>
                                         <th>Estado</th>
                                     </tr>
                                 </thead>
@@ -1029,13 +1291,6 @@
                                         <td>Casa en Country · Villa Belgrano</td>
                                         <td style="font-weight:700; color:#fff;">USD 850.000</td>
                                         <td>María López</td>
-                                        <td>
-                                            <div class="portal-sync-icons">
-                                                <span class="portal-dot" title="Zonaprop"><i class="fas fa-z"></i></span>
-                                                <span class="portal-dot" title="Argenprop"><i class="fas fa-a"></i></span>
-                                                <span class="portal-dot" title="Web Oficial"><i class="fas fa-globe"></i></span>
-                                            </div>
-                                        </td>
                                         <td><span class="status-pill active">Activa</span></td>
                                     </tr>
                                     <tr>
@@ -1051,37 +1306,293 @@
                                         <td>Penthouse · Nueva Córdoba</td>
                                         <td style="font-weight:700; color:#fff;">USD 420.000</td>
                                         <td>Juan Pérez</td>
-                                        <td>
-                                            <div class="portal-sync-icons">
-                                                <span class="portal-dot" title="Zonaprop"><i class="fas fa-z"></i></span>
-                                                <span class="portal-dot" title="MercadoLibre"><i class="fas fa-m"></i></span>
-                                            </div>
-                                        </td>
                                         <td><span class="status-pill reserved">Reservada</span></td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <div class="property-cell">
-                                                <img src="https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=100&fit=crop" class="prop-thumb" alt="Mansion" />
-                                                <div>
-                                                    <div class="prop-name">The Glass Mansion</div>
-                                                    <div class="prop-sub">Ref: #BH-1099</div>
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td>Mansión · Country El Bosque</td>
-                                        <td style="font-weight:700; color:#fff;">USD 1.200.000</td>
-                                        <td>María López</td>
-                                        <td>
-                                            <div class="portal-sync-icons">
-                                                <span class="portal-dot" title="Privado"><i class="fas fa-lock"></i></span>
-                                            </div>
-                                        </td>
-                                        <td><span class="status-pill offmarket">Off-Market</span></td>
                                     </tr>
                                 </tbody>
                             </table>
                         </div>
+                    </div>
+                </section>
+
+                <!-- ============================================================
+                     NUEVO MÓDULO: SITIO WEB (CMS EDITABLE COMPLETO)
+                     ============================================================ -->
+                <section class="tab-module" id="tab-sitio-web">
+                    <div class="glass-panel">
+                        <div class="panel-header">
+                            <div>
+                                <h2 class="panel-title">Editor en Vivo del Sitio Web</h2>
+                                <p style="color:var(--text-muted); font-size:12.5px;">Modificá cada texto, imagen, sección, integrante y parámetro visible en la landing page.</p>
+                            </div>
+                            <div style="display:flex; gap:10px;">
+                                <button class="status-pill pending" onclick="showToast('Restaurando valores por defecto...');">Restaurar Original</button>
+                                <button class="btn-luxury-action" onclick="showToast('¡Sitio Web actualizado y publicado con éxito!');"><i class="fas fa-floppy-disk"></i> Guardar Cambios Web</button>
+                            </div>
+                        </div>
+
+                        <!-- Pestañas internas del CMS -->
+                        <div class="cms-nav-tabs">
+                            <button class="cms-tab-btn is-active" data-cms="cms-hero">1. Hero &amp; Portada</button>
+                            <button class="cms-tab-btn" data-cms="cms-servicios">2. Servicios</button>
+                            <button class="cms-tab-btn" data-cms="cms-equipo">3. Equipo</button>
+                            <button class="cms-tab-btn" data-cms="cms-stats">4. Estadísticas</button>
+                            <button class="cms-tab-btn" data-cms="cms-proceso">5. Cómo Trabajamos</button>
+                            <button class="cms-tab-btn" data-cms="cms-contacto">6. Contacto &amp; Sucursal</button>
+                            <button class="cms-tab-btn" data-cms="cms-footer">7. Footer &amp; Legales</button>
+                        </div>
+
+                        <!-- 1. Hero & Portada -->
+                        <div class="cms-section-content is-active" id="cms-hero">
+                            <div class="form-grid-2">
+                                <div class="form-field">
+                                    <label>Título Principal - Línea 1</label>
+                                    <input type="text" id="cmsHeroLine1" value="Propiedades exclusivas." />
+                                </div>
+                                <div class="form-field">
+                                    <label>Título Principal - Línea 2 (Destacada)</label>
+                                    <input type="text" id="cmsHeroLine2" value="Experiencias extraordinarias." />
+                                </div>
+                            </div>
+                            <div class="form-field">
+                                <label>Pill / Badge Superior (Eyebrow)</label>
+                                <input type="text" id="cmsHeroEyebrow" value="Encontrá tu lugar" />
+                            </div>
+                            <div class="form-field">
+                                <label>Descripción del Hero</label>
+                                <textarea id="cmsHeroDesc">Selección premium en las mejores zonas residenciales y comerciales. Asesoramiento personalizado y confidencial en cada paso.</textarea>
+                            </div>
+                            <div class="form-grid-2">
+                                <div class="form-field">
+                                    <label>URL Imagen de Fondo (Hero)</label>
+                                    <input type="text" value="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=1920&q=85&fit=crop" />
+                                </div>
+                                <div class="form-field">
+                                    <label>URL Video Institucional (Modal)</label>
+                                    <input type="text" value="https://www.youtube.com/watch?v=dQw4w9WgXcQ" />
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 2. Servicios -->
+                        <div class="cms-section-content" id="cms-servicios">
+                            <div class="form-grid-2">
+                                <div class="form-field">
+                                    <label>Título Sección Servicios</label>
+                                    <input type="text" value="Mucho más que una inmobiliaria." />
+                                </div>
+                                <div class="form-field">
+                                    <label>Badge Sección</label>
+                                    <input type="text" value="Nuestros servicios" />
+                                </div>
+                            </div>
+                            <div class="form-field">
+                                <label>Descripción General de Servicios</label>
+                                <textarea>Ofrecemos un acompañamiento integral en cada etapa del proceso inmobiliario, con la excelencia y confianza que nos caracteriza.</textarea>
+                            </div>
+                            <div style="border-top:1px solid var(--border-subtle); padding-top:16px;">
+                                <h4 style="color:#fff; margin-bottom:14px; font-size:13px; text-transform:uppercase;">Tarjeta de Servicio 1 (Compra)</h4>
+                                <div class="form-grid-2">
+                                    <div class="form-field"><label>Título</label><input type="text" value="Compra de propiedades" /></div>
+                                    <div class="form-field"><label>Ícono FontAwesome</label><input type="text" value="fas fa-home" /></div>
+                                </div>
+                                <div class="form-field"><label>Descripción</label><textarea>Te ayudamos a encontrar la propiedad ideal que se adapta perfectamente a tu estilo de vida, requerimientos y proyectos de futuro.</textarea></div>
+                            </div>
+                        </div>
+
+                        <!-- 3. Equipo -->
+                        <div class="cms-section-content" id="cms-equipo">
+                            <div class="form-field">
+                                <label>Título Sección Equipo</label>
+                                <input type="text" value="Expertos que convierten propiedades en oportunidades." />
+                            </div>
+                            <div style="border-top:1px solid var(--border-subtle); padding-top:16px;">
+                                <h4 style="color:var(--accent); margin-bottom:14px; font-size:13px;">Agente 1: María López</h4>
+                                <div class="form-grid-2">
+                                    <div class="form-field"><label>Nombre Completo</label><input type="text" value="María López" /></div>
+                                    <div class="form-field"><label>Rol / Cargo</label><input type="text" value="BROKER SENIOR" /></div>
+                                    <div class="form-field"><label>Años de Experiencia</label><input type="text" value="12 años de experiencia" /></div>
+                                    <div class="form-field"><label>Foto URL</label><input type="text" value="https://images.unsplash.com/photo-1580618672591-eb180b1a973f?w=600&h=700&fit=crop" /></div>
+                                </div>
+                                <div class="form-field"><label>Biografía Resumida</label><textarea>Especialista en propiedades residenciales premium y negociación de activos de alto valor en countries.</textarea></div>
+                            </div>
+                        </div>
+
+                        <!-- 4. Estadísticas -->
+                        <div class="cms-section-content" id="cms-stats">
+                            <div class="form-grid-2">
+                                <div class="form-field">
+                                    <label>Métrica 1: Valor Objetivo (Contador)</label>
+                                    <input type="number" value="320" />
+                                </div>
+                                <div class="form-field">
+                                    <label>Métrica 1: Título</label>
+                                    <input type="text" value="Propiedades comercializadas" />
+                                </div>
+                                <div class="form-field">
+                                    <label>Métrica 2: Clientes Satisfechos</label>
+                                    <input type="number" value="1850" />
+                                </div>
+                                <div class="form-field">
+                                    <label>Métrica 3: Porcentaje Efectividad (%)</label>
+                                    <input type="number" value="98" />
+                                </div>
+                                <div class="form-field">
+                                    <label>Métrica 4: Años de Trayectoria</label>
+                                    <input type="number" value="15" />
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 5. Cómo Trabajamos -->
+                        <div class="cms-section-content" id="cms-proceso">
+                            <div class="form-field">
+                                <label>Título Sección Proceso</label>
+                                <input type="text" value="Un proceso simple. Resultados extraordinarios." />
+                            </div>
+                            <div class="form-grid-2">
+                                <div class="form-field"><label>Paso 01: Título</label><input type="text" value="Nos conocemos" /></div>
+                                <div class="form-field"><label>Paso 02: Título</label><input type="text" value="Tasación y análisis" /></div>
+                                <div class="form-field"><label>Paso 03: Título</label><input type="text" value="Plan de marketing" /></div>
+                                <div class="form-field"><label>Paso 04: Título</label><input type="text" value="Negociación" /></div>
+                                <div class="form-field"><label>Paso 05: Título</label><input type="text" value="Firma y entrega" /></div>
+                            </div>
+                        </div>
+
+                        <!-- 6. Contacto & Sucursal -->
+                        <div class="cms-section-content" id="cms-contacto">
+                            <div class="form-grid-2">
+                                <div class="form-field"><label>WhatsApp Directo</label><input type="text" value="+54 9 387 600-0000" /></div>
+                                <div class="form-field"><label>Correo Electrónico</label><input type="email" value="info@bienenhaus.com" /></div>
+                                <div class="form-field"><label>Teléfono Central</label><input type="text" value="+54 387 400-0000" /></div>
+                                <div class="form-field"><label>Dirección Física</label><input type="text" value="Av. Figueroa Alcorta 1234, Córdoba" /></div>
+                                <div class="form-field"><label>Horario Lun a Vie</label><input type="text" value="09:00 - 18:00" /></div>
+                                <div class="form-field"><label>Horario Sábados</label><input type="text" value="09:00 - 13:00" /></div>
+                            </div>
+                        </div>
+
+                        <!-- 7. Footer & Legales -->
+                        <div class="cms-section-content" id="cms-footer">
+                            <div class="form-grid-2">
+                                <div class="form-field"><label>Marca en Marca de Agua (Watermark)</label><input type="text" value="BIENENHAUS" /></div>
+                                <div class="form-field"><label>Matrícula Profesional C.R.I.</label><input type="text" value="C.R.I. 183944" /></div>
+                            </div>
+                            <div class="form-field">
+                                <label>Descripción del Footer</label>
+                                <textarea>Especialistas en compra, venta, tasaciones e inversiones inmobiliarias en el segmento más exclusivo del país.</textarea>
+                            </div>
+                            <div class="form-field">
+                                <label>Texto Copyright Inferior</label>
+                                <input type="text" value="© 2026 BIENENHAUS PROPIEDADES — Todos los derechos reservados." />
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- ============================================================
+                     MÓDULO: PORTALES (CONEXIÓN DE CUENTAS & APIS)
+                     ============================================================ -->
+                <section class="tab-module" id="tab-portales">
+                    <div class="panel-header" style="margin-bottom:20px;">
+                        <div>
+                            <h2 class="panel-title">Sincronización Multi-Portal &amp; Conexión de Cuentas</h2>
+                            <p style="color:var(--text-muted); font-size:12.5px;">Conectá tus cuentas oficiales de Zonaprop, MercadoLibre, Argenprop y gestioná las credenciales API.</p>
+                        </div>
+                        <button class="btn-luxury-action" onclick="showToast('Sincronizando 128 propiedades en todos los portales conectados...');"><i class="fas fa-arrows-rotate"></i> Sincronizar Todo</button>
+                    </div>
+
+                    <div class="portals-grid">
+                        <!-- Zonaprop -->
+                        <div class="portal-card">
+                            <div>
+                                <div class="portal-header">
+                                    <span class="portal-logo-title"><i class="fas fa-building" style="color:var(--accent);"></i> Zonaprop API</span>
+                                    <div class="toggle-switch is-active" onclick="toggleSwitch(this)"></div>
+                                </div>
+                                <p style="color:var(--text-muted); font-size:13px; margin-bottom:14px;">Conectado a la cuenta <strong>bienenhaus_inmobiliaria</strong>. Envío automático de propiedades destacadas y recepción directa de consultas.</p>
+                                <div style="font-size:12px; color:var(--success); margin-bottom:14px;"><i class="fas fa-circle-check"></i> Token OAuth Válido (Vence 2027)</div>
+                            </div>
+                            <div style="border-top:1px solid var(--border-subtle); padding-top:14px; display:flex; justify-content:space-between; align-items:center;">
+                                <span style="color:var(--accent); font-weight:700; font-size:12px;">114 Propiedades Sincronizadas</span>
+                                <button class="status-pill active" onclick="openPortalModal('Zonaprop API', 'zp_live_9948120392', 'bienenhaus_cba')"><i class="fas fa-gear"></i> Configurar Cuenta</button>
+                            </div>
+                        </div>
+
+                        <!-- MercadoLibre -->
+                        <div class="portal-card">
+                            <div>
+                                <div class="portal-header">
+                                    <span class="portal-logo-title"><i class="fas fa-handshake" style="color:#FFE600;"></i> MercadoLibre Inmuebles</span>
+                                    <div class="toggle-switch is-active" onclick="toggleSwitch(this)"></div>
+                                </div>
+                                <p style="color:var(--text-muted); font-size:13px; margin-bottom:14px;">Integración de inventario con publicaciones Oro Premium y webhook de preguntas instantáneas.</p>
+                                <div style="font-size:12px; color:var(--success); margin-bottom:14px;"><i class="fas fa-circle-check"></i> Conexión Activa (App ID: 894129)</div>
+                            </div>
+                            <div style="border-top:1px solid var(--border-subtle); padding-top:14px; display:flex; justify-content:space-between; align-items:center;">
+                                <span style="color:var(--accent); font-weight:700; font-size:12px;">85 Propiedades Sincronizadas</span>
+                                <button class="status-pill active" onclick="openPortalModal('MercadoLibre Inmuebles', 'APP_USR-88129031-cba', 'bienenhaus_oficial')"><i class="fas fa-gear"></i> Configurar Cuenta</button>
+                            </div>
+                        </div>
+
+                        <!-- Argenprop -->
+                        <div class="portal-card">
+                            <div>
+                                <div class="portal-header">
+                                    <span class="portal-logo-title"><i class="fas fa-house-chimney" style="color:var(--info);"></i> Argenprop</span>
+                                    <div class="toggle-switch is-active" onclick="toggleSwitch(this)"></div>
+                                </div>
+                                <p style="color:var(--text-muted); font-size:13px; margin-bottom:14px;">Paquete corporativo habilitado. Exportación en formato XML/API cada 6 horas.</p>
+                                <div style="font-size:12px; color:var(--success); margin-bottom:14px;"><i class="fas fa-circle-check"></i> Cuenta Inmobiliaria #4912</div>
+                            </div>
+                            <div style="border-top:1px solid var(--border-subtle); padding-top:14px; display:flex; justify-content:space-between; align-items:center;">
+                                <span style="color:var(--accent); font-weight:700; font-size:12px;">98 Propiedades Sincronizadas</span>
+                                <button class="status-pill active" onclick="openPortalModal('Argenprop Corporativo', 'arg_sec_77192834', 'bienenhaus_arg')"><i class="fas fa-gear"></i> Configurar Cuenta</button>
+                            </div>
+                        </div>
+
+                        <!-- Properati / Tokko -->
+                        <div class="portal-card">
+                            <div>
+                                <div class="portal-header">
+                                    <span class="portal-logo-title"><i class="fas fa-city" style="color:var(--warning);"></i> Properati &amp; Red Tokko</span>
+                                    <div class="toggle-switch" onclick="toggleSwitch(this)"></div>
+                                </div>
+                                <p style="color:var(--text-muted); font-size:13px; margin-bottom:14px;">Sincronización para portal Properati y red de inmobiliarias asociadas.</p>
+                                <div style="font-size:12px; color:var(--warning); margin-bottom:14px;"><i class="fas fa-circle-exclamation"></i> Requiere Autenticación</div>
+                            </div>
+                            <div style="border-top:1px solid var(--border-subtle); padding-top:14px; display:flex; justify-content:space-between; align-items:center;">
+                                <span style="color:var(--text-dim); font-size:12px;">Desconectado</span>
+                                <button class="status-pill pending" onclick="openPortalModal('Properati / Tokko API', '', '')"><i class="fas fa-plug"></i> Conectar Cuenta</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Log de Sincronizaciones -->
+                    <div class="glass-panel">
+                        <h3 class="panel-title" style="font-size:16px; margin-bottom:16px;">Historial de Sincronizaciones Recientes</h3>
+                        <table class="luxury-table">
+                            <thead>
+                                <tr>
+                                    <th>Fecha y Hora</th>
+                                    <th>Portal</th>
+                                    <th>Inmuebles Actualizados</th>
+                                    <th>Estado</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Hoy · 14:20 hs</td>
+                                    <td>Zonaprop API Directa</td>
+                                    <td>114 de 114 propiedades</td>
+                                    <td><span class="status-pill active"><i class="fas fa-check"></i> Exitosa</span></td>
+                                </tr>
+                                <tr>
+                                    <td>Hoy · 12:00 hs</td>
+                                    <td>MercadoLibre Inmuebles</td>
+                                    <td>85 de 85 propiedades</td>
+                                    <td><span class="status-pill active"><i class="fas fa-check"></i> Exitosa</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
                 </section>
 
@@ -1130,27 +1641,6 @@
                                         <td><span class="status-pill active">Activa</span></td>
                                         <td>
                                             <button style="padding:6px 10px; color:var(--accent);" title="Editar Ficha" onclick="showToast('Editando #BH-8921')"><i class="fas fa-pen-to-square"></i></button>
-                                            <button style="padding:6px 10px; color:var(--text-muted);" title="Ver Galería"><i class="fas fa-images"></i></button>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <div class="property-cell">
-                                                <img src="https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=100&fit=crop" class="prop-thumb" />
-                                                <div>
-                                                    <div class="prop-name">Sky Penthouse &amp; Rooftop</div>
-                                                    <div class="prop-sub">Nueva Córdoba</div>
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td>195 m²</td>
-                                        <td>3 Dorms</td>
-                                        <td style="font-weight:700; color:#fff;">USD 420.000</td>
-                                        <td>Dra. Silvina Aráoz</td>
-                                        <td><span class="status-pill reserved">Reservada</span></td>
-                                        <td>
-                                            <button style="padding:6px 10px; color:var(--accent);"><i class="fas fa-pen-to-square"></i></button>
-                                            <button style="padding:6px 10px; color:var(--text-muted);"><i class="fas fa-images"></i></button>
                                         </td>
                                     </tr>
                                 </tbody>
@@ -1159,7 +1649,7 @@
                     </div>
                 </section>
 
-                <!-- 3. MÓDULO: LEADS (CRM PIPELINE) -->
+                <!-- 3. MÓDULO: LEADS -->
                 <section class="tab-module" id="tab-leads">
                     <div class="panel-header" style="margin-bottom:18px;">
                         <div>
@@ -1170,7 +1660,6 @@
                     </div>
 
                     <div class="leads-pipeline">
-                        <!-- Columna 1 -->
                         <div class="pipeline-col">
                             <div class="pipeline-header">
                                 <span>1. Nuevos (Web/WhatsApp)</span>
@@ -1181,14 +1670,7 @@
                                 <div class="lead-meta"><i class="fab fa-whatsapp" style="color:var(--accent);"></i> Consulta por Villa Belgrano</div>
                                 <div class="lead-budget">Presupuesto: USD 700k+</div>
                             </div>
-                            <div class="lead-card">
-                                <div class="lead-title">Mariana Pellegrini</div>
-                                <div class="lead-meta"><i class="fas fa-globe" style="color:var(--accent);"></i> Formulario Web · Venta Penthouse</div>
-                                <div class="lead-budget">Busca Tasación Oficial</div>
-                            </div>
                         </div>
-
-                        <!-- Columna 2 -->
                         <div class="pipeline-col">
                             <div class="pipeline-header">
                                 <span>2. Contactados / Calificados</span>
@@ -1200,36 +1682,10 @@
                                 <div class="lead-budget">Presupuesto: USD 350k</div>
                             </div>
                         </div>
-
-                        <!-- Columna 3 -->
-                        <div class="pipeline-col">
-                            <div class="pipeline-header">
-                                <span>3. Visita Agendada</span>
-                                <span class="nav-badge">2</span>
-                            </div>
-                            <div class="lead-card">
-                                <div class="lead-title">Lic. Federico Rossi</div>
-                                <div class="lead-meta"><i class="fas fa-calendar-check" style="color:var(--accent);"></i> Sábado 11:00 hs · Country El Bosque</div>
-                                <div class="lead-budget">Comprador Directo</div>
-                            </div>
-                        </div>
-
-                        <!-- Columna 4 -->
-                        <div class="pipeline-col">
-                            <div class="pipeline-header">
-                                <span>4. Oferta / Cierre</span>
-                                <span class="nav-badge" style="background:var(--success); color:#000;">1</span>
-                            </div>
-                            <div class="lead-card" style="border-color:var(--border-accent);">
-                                <div class="lead-title">Arq. Gastón Valenzuela</div>
-                                <div class="lead-meta"><i class="fas fa-file-contract" style="color:var(--success);"></i> Boleto en redacción legal</div>
-                                <div class="lead-budget">Operación: USD 420.000</div>
-                            </div>
-                        </div>
                     </div>
                 </section>
 
-                <!-- 4. MÓDULO: AGENDA DE VISITAS -->
+                <!-- 4. MÓDULO: AGENDA -->
                 <section class="tab-module" id="tab-agenda">
                     <div class="glass-panel">
                         <div class="panel-header">
@@ -1239,35 +1695,16 @@
                             </div>
                             <button class="btn-luxury-action" onclick="showToast('Agendando nueva visita...')">+ Agendar Cita</button>
                         </div>
-
                         <div class="table-responsive">
                             <table class="luxury-table">
-                                <thead>
-                                    <tr>
-                                        <th>Fecha &amp; Hora</th>
-                                        <th>Propiedad</th>
-                                        <th>Cliente / Prospecto</th>
-                                        <th>Broker Asignado</th>
-                                        <th>Tipo de Visita</th>
-                                        <th>Estado</th>
-                                    </tr>
-                                </thead>
+                                <thead><tr><th>Fecha &amp; Hora</th><th>Propiedad</th><th>Cliente</th><th>Broker</th><th>Estado</th></tr></thead>
                                 <tbody>
                                     <tr>
                                         <td style="font-weight:700; color:var(--accent);">Hoy · 16:30 hs</td>
                                         <td>Villa Solares de Bellavista</td>
-                                        <td>Dr. Carlos Varela (+54 9 387...)</td>
+                                        <td>Dr. Carlos Varela</td>
                                         <td>María López</td>
-                                        <td>Presencial con Llaves</td>
                                         <td><span class="status-pill active">Confirmada</span></td>
-                                    </tr>
-                                    <tr>
-                                        <td style="font-weight:700; color:var(--text-secondary);">Mañana · 10:00 hs</td>
-                                        <td>Sky Penthouse Nueva Córdoba</td>
-                                        <td>Lic. Romina Bustos</td>
-                                        <td>Juan Pérez</td>
-                                        <td>Recorrido 1er Contacto</td>
-                                        <td><span class="status-pill pending">Pendiente Conf.</span></td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -1285,50 +1722,20 @@
                             </div>
                             <button class="btn-luxury-action" onclick="showToast('Alta de nuevo agente...')">+ Registrar Agente</button>
                         </div>
-
                         <div class="table-responsive">
                             <table class="luxury-table">
-                                <thead>
-                                    <tr>
-                                        <th>Agente</th>
-                                        <th>Rol / Especialidad</th>
-                                        <th>Propiedades Asignadas</th>
-                                        <th>Ventas Cerradas (2026)</th>
-                                        <th>Contacto</th>
-                                        <th>Estado</th>
-                                    </tr>
-                                </thead>
+                                <thead><tr><th>Agente</th><th>Rol</th><th>Propiedades</th><th>Ventas</th><th>Estado</th></tr></thead>
                                 <tbody>
                                     <tr>
                                         <td>
                                             <div class="property-cell">
                                                 <img src="https://images.unsplash.com/photo-1580618672591-eb180b1a973f?w=100&fit=crop" class="user-avatar" />
-                                                <div>
-                                                    <div class="prop-name">María López</div>
-                                                    <div class="prop-sub">Mat. C.R.I. 9812</div>
-                                                </div>
+                                                <div class="prop-name">María López</div>
                                             </div>
                                         </td>
-                                        <td>Broker Senior · Residencial Lujo</td>
+                                        <td>Broker Senior · Lujo</td>
                                         <td>42 Activas</td>
                                         <td style="font-weight:700; color:var(--accent);">USD 3.8M</td>
-                                        <td>maria@bienenhaus.com</td>
-                                        <td><span class="status-pill active">Activo</span></td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <div class="property-cell">
-                                                <img src="https://images.unsplash.com/photo-1560250097-0b93528c311a?w=100&fit=crop" class="user-avatar" />
-                                                <div>
-                                                    <div class="prop-name">Juan Pérez</div>
-                                                    <div class="prop-sub">Mat. C.R.I. 1104</div>
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td>Asesor Comercial · Inversiones</td>
-                                        <td>28 Activas</td>
-                                        <td style="font-weight:700; color:var(--accent);">USD 1.9M</td>
-                                        <td>juan@bienenhaus.com</td>
                                         <td><span class="status-pill active">Activo</span></td>
                                     </tr>
                                 </tbody>
@@ -1347,38 +1754,15 @@
                             </div>
                             <button class="btn-luxury-action" onclick="showToast('Nuevo Propietario registrado.')">+ Nuevo Propietario</button>
                         </div>
-
                         <div class="table-responsive">
                             <table class="luxury-table">
-                                <thead>
-                                    <tr>
-                                        <th>Titular</th>
-                                        <th>Inmuebles Vinculados</th>
-                                        <th>Teléfono</th>
-                                        <th>Autorización de Venta</th>
-                                        <th>Honorarios Pactados</th>
-                                    </tr>
-                                </thead>
+                                <thead><tr><th>Titular</th><th>Inmuebles</th><th>Teléfono</th><th>Autorización</th></tr></thead>
                                 <tbody>
                                     <tr>
-                                        <td>
-                                            <div class="prop-name">Ing. Roberto Gómez</div>
-                                            <div class="prop-sub">DNI 24.891.002</div>
-                                        </td>
+                                        <td><div class="prop-name">Ing. Roberto Gómez</div></td>
                                         <td>Villa Solares de Bellavista</td>
                                         <td>+54 9 387 488-1290</td>
                                         <td><span class="status-pill active">Exclusividad 120 días</span></td>
-                                        <td>3.0% + IVA</td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <div class="prop-name">Dra. Silvina Aráoz</div>
-                                            <div class="prop-sub">DNI 29.340.119</div>
-                                        </td>
-                                        <td>Sky Penthouse Nueva Córdoba</td>
-                                        <td>+54 9 351 600-4491</td>
-                                        <td><span class="status-pill active">Exclusividad 90 días</span></td>
-                                        <td>3.0% + IVA</td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -1390,35 +1774,17 @@
                 <section class="tab-module" id="tab-tasaciones">
                     <div class="glass-panel">
                         <div class="panel-header">
-                            <div>
-                                <h2 class="panel-title">Solicitudes de Tasación Oficial</h2>
-                                <p style="color:var(--text-muted); font-size:12.5px;">Pedidos entrantes desde la web para valuación profesional.</p>
-                            </div>
+                            <h2 class="panel-title">Solicitudes de Tasación Oficial</h2>
                         </div>
-
                         <div class="table-responsive">
                             <table class="luxury-table">
-                                <thead>
-                                    <tr>
-                                        <th>Solicitante</th>
-                                        <th>Ubicación &amp; Tipología</th>
-                                        <th>Superficie Declarada</th>
-                                        <th>Valuación Estimada</th>
-                                        <th>Estado</th>
-                                        <th>Acción</th>
-                                    </tr>
-                                </thead>
+                                <thead><tr><th>Solicitante</th><th>Tipología</th><th>Valuación Estimada</th><th>Acción</th></tr></thead>
                                 <tbody>
                                     <tr>
-                                        <td>
-                                            <div class="prop-name">Mariana Pellegrini</div>
-                                            <div class="prop-sub">mariana.p@gmail.com</div>
-                                        </td>
+                                        <td><div class="prop-name">Mariana Pellegrini</div></td>
                                         <td>Piso Exclusivo · B° General Paz</td>
-                                        <td>220 m² cubiertos</td>
                                         <td style="font-weight:700; color:var(--accent);">USD 280.000 - 310.000</td>
-                                        <td><span class="status-pill pending">Inspección Pendiente</span></td>
-                                        <td><button class="status-pill active" onclick="showToast('Generando informe ACM...')">Emitir Informe</button></td>
+                                        <td><button class="status-pill active" onclick="showToast('Emitiendo informe ACM...')">Emitir Informe</button></td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -1426,103 +1792,21 @@
                     </div>
                 </section>
 
-                <!-- 8. MÓDULO: PORTALES (SINCRONIZACIÓN MULTI-PORTAL) -->
-                <section class="tab-module" id="tab-portales">
-                    <div class="panel-header" style="margin-bottom:20px;">
-                        <div>
-                            <h2 class="panel-title">Integración con Portales Inmobiliarios</h2>
-                            <p style="color:var(--text-muted); font-size:12.5px;">Sincronización API automática de publicaciones y estadísticas.</p>
-                        </div>
-                        <button class="status-pill active" onclick="showToast('Sincronizando 128 propiedades con todas las APIs...')"><i class="fas fa-arrows-rotate"></i> Forzar Sincronización</button>
-                    </div>
-
-                    <div class="portals-grid">
-                        <div class="portal-card">
-                            <div>
-                                <div class="portal-header">
-                                    <span class="portal-logo-title">Zonaprop API</span>
-                                    <div class="toggle-switch is-active" onclick="toggleSwitch(this)"></div>
-                                </div>
-                                <p style="color:var(--text-muted); font-size:13px; margin-bottom:18px;">Publicación automática de avisos destacados y sincronización de consultas a leads.</p>
-                            </div>
-                            <div style="border-top:1px solid var(--border-subtle); padding-top:14px; display:flex; justify-content:space-between; font-size:12px;">
-                                <span style="color:var(--text-dim);">Avisos Sincronizados:</span>
-                                <span style="color:var(--accent); font-weight:700;">114 / 128</span>
-                            </div>
-                        </div>
-
-                        <div class="portal-card">
-                            <div>
-                                <div class="portal-header">
-                                    <span class="portal-logo-title">Argenprop</span>
-                                    <div class="toggle-switch is-active" onclick="toggleSwitch(this)"></div>
-                                </div>
-                                <p style="color:var(--text-muted); font-size:13px; margin-bottom:18px;">Paquete corporativo con avisos SuperDestacados activos y métricas directas.</p>
-                            </div>
-                            <div style="border-top:1px solid var(--border-subtle); padding-top:14px; display:flex; justify-content:space-between; font-size:12px;">
-                                <span style="color:var(--text-dim);">Avisos Sincronizados:</span>
-                                <span style="color:var(--accent); font-weight:700;">98 / 128</span>
-                            </div>
-                        </div>
-
-                        <div class="portal-card">
-                            <div>
-                                <div class="portal-header">
-                                    <span class="portal-logo-title">MercadoLibre Inmuebles</span>
-                                    <div class="toggle-switch is-active" onclick="toggleSwitch(this)"></div>
-                                </div>
-                                <p style="color:var(--text-muted); font-size:13px; margin-bottom:18px;">Integración de inventario con respuestas automáticas configuradas vía webhook.</p>
-                            </div>
-                            <div style="border-top:1px solid var(--border-subtle); padding-top:14px; display:flex; justify-content:space-between; font-size:12px;">
-                                <span style="color:var(--text-dim);">Avisos Sincronizados:</span>
-                                <span style="color:var(--accent); font-weight:700;">85 / 128</span>
-                            </div>
-                        </div>
-                    </div>
-                </section>
-
-                <!-- 9. MÓDULO: USUARIOS -->
+                <!-- 8. MÓDULO: USUARIOS -->
                 <section class="tab-module" id="tab-usuarios">
                     <div class="glass-panel">
                         <div class="panel-header">
-                            <div>
-                                <h2 class="panel-title">Usuarios del Sistema</h2>
-                                <p style="color:var(--text-muted); font-size:12.5px;">Control de accesos y roles de seguridad.</p>
-                            </div>
-                            <button class="btn-luxury-action" onclick="showToast('Nuevo usuario...')">+ Invitar Usuario</button>
+                            <h2 class="panel-title">Usuarios del Sistema &amp; Permisos</h2>
+                            <button class="btn-luxury-action" onclick="showToast('Nuevo usuario invitado.')">+ Invitar Usuario</button>
                         </div>
-
                         <div class="table-responsive">
                             <table class="luxury-table">
-                                <thead>
-                                    <tr>
-                                        <th>Usuario</th>
-                                        <th>Rol Asignado</th>
-                                        <th>Última Actividad</th>
-                                        <th>Doble Factor (2FA)</th>
-                                        <th>Acciones</th>
-                                    </tr>
-                                </thead>
+                                <thead><tr><th>Usuario</th><th>Rol</th><th>2FA</th></tr></thead>
                                 <tbody>
                                     <tr>
-                                        <td>
-                                            <div class="prop-name">María López</div>
-                                            <div class="prop-sub">maria@bienenhaus.com</div>
-                                        </td>
+                                        <td><div class="prop-name">María López</div></td>
                                         <td><span class="status-pill active">SuperAdmin</span></td>
-                                        <td>En línea ahora</td>
                                         <td><span style="color:var(--success);"><i class="fas fa-shield-check"></i> Activo</span></td>
-                                        <td><button style="color:var(--text-dim);"><i class="fas fa-ellipsis-vertical"></i></button></td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <div class="prop-name">Juan Pérez</div>
-                                            <div class="prop-sub">juan@bienenhaus.com</div>
-                                        </td>
-                                        <td><span class="status-pill reserved">Agente Comercial</span></td>
-                                        <td>Hace 25 min</td>
-                                        <td><span style="color:var(--success);"><i class="fas fa-shield-check"></i> Activo</span></td>
-                                        <td><button style="color:var(--text-dim);"><i class="fas fa-ellipsis-vertical"></i></button></td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -1530,34 +1814,16 @@
                     </div>
                 </section>
 
-                <!-- 10. MÓDULO: CONFIGURACIÓN -->
+                <!-- 9. MÓDULO: CONFIGURACIÓN -->
                 <section class="tab-module" id="tab-configuracion">
                     <div class="glass-panel">
                         <div class="panel-header">
-                            <div>
-                                <h2 class="panel-title">Ajustes Generales de la Inmobiliaria</h2>
-                                <p style="color:var(--text-muted); font-size:12.5px;">Parámetros de empresa, divisas y notificaciones.</p>
-                            </div>
-                            <button class="btn-luxury-action" onclick="showToast('Configuraciones guardadas correctamente.')">Guardar Cambios</button>
+                            <h2 class="panel-title">Ajustes Generales de la Inmobiliaria</h2>
+                            <button class="btn-luxury-action" onclick="showToast('Configuraciones guardadas.');">Guardar Cambios</button>
                         </div>
-
-                        <div style="display:grid; grid-template-columns:1fr 1fr; gap:24px;">
-                            <div>
-                                <label style="display:block; font-size:12px; font-weight:700; color:var(--text-muted); margin-bottom:6px; text-transform:uppercase;">Razón Social / Marca</label>
-                                <input type="text" value="BIENENHAUS PROPIEDADES S.A.S." style="width:100%; height:44px; background:rgba(255,255,255,0.03); border:1px solid var(--border-subtle); border-radius:var(--radius-sm); padding:0 14px; outline:none;" />
-                            </div>
-                            <div>
-                                <label style="display:block; font-size:12px; font-weight:700; color:var(--text-muted); margin-bottom:6px; text-transform:uppercase;">Matrícula Profesional</label>
-                                <input type="text" value="C.R.I. 183944" style="width:100%; height:44px; background:rgba(255,255,255,0.03); border:1px solid var(--border-subtle); border-radius:var(--radius-sm); padding:0 14px; outline:none;" />
-                            </div>
-                            <div>
-                                <label style="display:block; font-size:12px; font-weight:700; color:var(--text-muted); margin-bottom:6px; text-transform:uppercase;">WhatsApp Central de Ventas</label>
-                                <input type="text" value="+54 9 387 600-0000" style="width:100%; height:44px; background:rgba(255,255,255,0.03); border:1px solid var(--border-subtle); border-radius:var(--radius-sm); padding:0 14px; outline:none;" />
-                            </div>
-                            <div>
-                                <label style="display:block; font-size:12px; font-weight:700; color:var(--text-muted); margin-bottom:6px; text-transform:uppercase;">Comisión Base Venta (%)</label>
-                                <input type="text" value="3.0 %" style="width:100%; height:44px; background:rgba(255,255,255,0.03); border:1px solid var(--border-subtle); border-radius:var(--radius-sm); padding:0 14px; outline:none;" />
-                            </div>
+                        <div class="form-grid-2">
+                            <div class="form-field"><label>Razón Social</label><input type="text" value="BIENENHAUS PROPIEDADES S.A.S." /></div>
+                            <div class="form-field"><label>Matrícula Profesional</label><input type="text" value="C.R.I. 183944" /></div>
                         </div>
                     </div>
                 </section>
@@ -1566,25 +1832,118 @@
         </main>
     </div>
 
-    <!-- Toast Notification Flotante -->
+    <!-- ============================================================
+         MODAL DE CONFIGURACIÓN DE CUENTA DE PORTAL (API)
+         ============================================================ -->
+    <div class="admin-modal" id="portalModal">
+        <div class="modal-box">
+            <h3 id="modalPortalTitle" style="font-family:var(--font-heading); font-size:22px; color:#fff; margin-bottom:6px;">Configurar Portal</h3>
+            <p style="color:var(--text-muted); font-size:12.5px; margin-bottom:22px;">Ingresá las credenciales API provistas por el portal para sincronizar el catálogo automáticamente.</p>
+
+            <form id="portalApiForm" onsubmit="event.preventDefault(); savePortalConfig();">
+                <div class="form-field">
+                    <label>API Key / Client ID</label>
+                    <input type="text" id="portalApiKey" placeholder="Ej: zp_live_98129038" required />
+                </div>
+                <div class="form-field">
+                    <label>Client Secret / Access Token</label>
+                    <input type="password" id="portalApiSecret" value="••••••••••••••••••••" required />
+                </div>
+                <div class="form-field">
+                    <label>Frecuencia de Sincronización Automática</label>
+                    <select id="portalSyncFreq" style="width:100%; height:44px; background:rgba(255,255,255,0.03); border:1px solid var(--border-input); border-radius:12px; padding:0 14px; outline:none;">
+                        <option>En tiempo real (Webhook inmediato)</option>
+                        <option>Cada 1 hora</option>
+                        <option>Cada 6 horas</option>
+                        <option>Manual únicamente</option>
+                    </select>
+                </div>
+
+                <div style="display:flex; justify-content:flex-end; gap:12px; margin-top:26px;">
+                    <button type="button" class="status-pill pending" onclick="closePortalModal();">Cancelar</button>
+                    <button type="button" class="status-pill active" onclick="showToast('Prueba de conexión exitosa con el portal.');"><i class="fas fa-bolt"></i> Probar Conexión</button>
+                    <button type="submit" class="btn-luxury-action">Guardar Credenciales</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- TOAST NOTIFICATION FLOTANTE -->
     <div class="toast-msg" id="toastMsg">
         <i class="fas fa-circle-check" style="color:var(--accent); font-size:18px;"></i>
         <span id="toastText">Operación realizada con éxito.</span>
     </div>
 
     <!-- ============================================================
-         SCRIPTS: NAVEGACIÓN ENTRE MÓDULOS & INTERACTIVIDAD
-         ============================================================ */
-    -->
+         SCRIPTS: NAVEGACIÓN, CMS, LOGIN & PORTALES
+         ============================================================ -->
     <script>
         (function() {
             'use strict';
 
+            // 1. Preloader inicial
+            window.addEventListener('load', () => {
+                const preloader = document.getElementById('preloader');
+                setTimeout(() => {
+                    preloader.classList.add('is-hidden');
+                    document.body.classList.remove('is-loading');
+                }, 400);
+            });
+
+            // 2. Cursor Glow
+            const cursorGlow = document.getElementById('cursorGlow');
+            const cursorDot = document.getElementById('cursorDot');
+            if (window.matchMedia('(hover: hover)').matches && cursorGlow && cursorDot) {
+                let mouseX = 0, mouseY = 0, currentX = 0, currentY = 0;
+                window.addEventListener('mousemove', (e) => {
+                    mouseX = e.clientX;
+                    mouseY = e.clientY;
+                    cursorDot.style.left = mouseX + 'px';
+                    cursorDot.style.top = mouseY + 'px';
+                    cursorGlow.classList.add('is-visible');
+                    cursorDot.classList.add('is-visible');
+                });
+                function loopCursor() {
+                    currentX += (mouseX - currentX) * 0.15;
+                    currentY += (mouseY - currentY) * 0.15;
+                    cursorGlow.style.left = currentX + 'px';
+                    cursorGlow.style.top = currentY + 'px';
+                    requestAnimationFrame(loopCursor);
+                }
+                loopCursor();
+
+                document.querySelectorAll('a, button, input, select, textarea, .nav-item, .kpi-card, .portal-card').forEach(el => {
+                    el.addEventListener('mouseenter', () => cursorGlow.classList.add('is-hover'));
+                    el.addEventListener('mouseleave', () => cursorGlow.classList.remove('is-hover'));
+                });
+            }
+
+            // 3. Login & Logout
+            const loginScreen = document.getElementById('loginScreen');
+            const loginForm = document.getElementById('loginForm');
+            const btnLoginSubmit = document.getElementById('btnLoginSubmit');
+
+            if (loginForm) {
+                loginForm.addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    btnLoginSubmit.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Verificando credenciales...';
+                    setTimeout(() => {
+                        loginScreen.classList.add('is-hidden');
+                        showToast('¡Bienvenida, María López! Acceso concedido.');
+                        btnLoginSubmit.innerHTML = '<span>Ingresar al Panel</span> <i class="fas fa-arrow-right"></i>';
+                    }, 800);
+                });
+            }
+
+            window.logoutSession = function() {
+                loginScreen.classList.remove('is-hidden');
+                showToast('Sesión finalizada correctamente.');
+            };
+
+            // 4. Navegación entre Módulos
             const navItems = document.querySelectorAll('.nav-item');
             const tabModules = document.querySelectorAll('.tab-module');
             const moduleTitle = document.getElementById('moduleTitle');
-            const toast = document.getElementById('toastMsg');
-            const toastText = document.getElementById('toastText');
 
             const titlesMap = {
                 'tab-dashboard': 'Dashboard Principal',
@@ -1594,64 +1953,87 @@
                 'tab-agentes': 'Brokers & Agentes',
                 'tab-propietarios': 'Padrón de Propietarios',
                 'tab-tasaciones': 'Tasaciones & Valuaciones',
-                'tab-portales': 'Sincronización de Portales',
+                'tab-sitio-web': 'Sitio Web (Editor CMS en Vivo)',
+                'tab-portales': 'Sincronización de Portales & APIs',
                 'tab-usuarios': 'Usuarios & Permisos',
                 'tab-configuracion': 'Configuración del Sistema'
             };
 
             window.switchTab = function(targetTabId) {
-                // Actualizar Sidebar
                 navItems.forEach(item => {
-                    if (item.dataset.tab === targetTabId) {
-                        item.classList.add('is-active');
-                    } else {
-                        item.classList.remove('is-active');
-                    }
+                    item.classList.toggle('is-active', item.dataset.tab === targetTabId);
                 });
-
-                // Conmutar Módulo
                 tabModules.forEach(mod => {
-                    if (mod.id === targetTabId) {
-                        mod.classList.add('is-active');
-                    } else {
-                        mod.classList.remove('is-active');
-                    }
+                    mod.classList.toggle('is-active', mod.id === targetTabId);
                 });
-
-                // Cambiar Título del Header
                 if (moduleTitle && titlesMap[targetTabId]) {
                     moduleTitle.textContent = titlesMap[targetTabId];
                 }
-
-                // Cerrar Sidebar en mobile si está abierta
                 document.getElementById('sidebar')?.classList.remove('mobile-open');
             };
 
             navItems.forEach(item => {
                 item.addEventListener('click', () => {
-                    const target = item.dataset.tab;
-                    if (target) switchTab(target);
+                    if (item.dataset.tab) switchTab(item.dataset.tab);
                 });
             });
 
-            // Switch Toggle para Portales
+            // 5. Pestañas Internas del CMS (Sitio Web)
+            const cmsTabButtons = document.querySelectorAll('.cms-tab-btn');
+            const cmsSections = document.querySelectorAll('.cms-section-content');
+
+            cmsTabButtons.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    cmsTabButtons.forEach(b => b.classList.remove('is-active'));
+                    cmsSections.forEach(s => s.classList.remove('is-active'));
+                    this.classList.add('is-active');
+                    const targetId = this.dataset.cms;
+                    document.getElementById(targetId)?.classList.add('is-active');
+                });
+            });
+
+            // 6. Modal de Portales API
+            const portalModal = document.getElementById('portalModal');
+            const modalPortalTitle = document.getElementById('modalPortalTitle');
+            const portalApiKey = document.getElementById('portalApiKey');
+
+            window.openPortalModal = function(portalName, apiKey, account) {
+                if (!portalModal) return;
+                modalPortalTitle.textContent = `Configuración de ${portalName}`;
+                portalApiKey.value = apiKey || '';
+                portalModal.classList.add('is-open');
+            };
+
+            window.closePortalModal = function() {
+                portalModal?.classList.remove('is-open');
+            };
+
+            window.savePortalConfig = function() {
+                closePortalModal();
+                showToast('Credenciales del portal guardadas y sincronizadas.');
+            };
+
+            portalModal?.addEventListener('click', (e) => {
+                if (e.target === portalModal) closePortalModal();
+            });
+
+            // 7. Toggle Switches & Toast
             window.toggleSwitch = function(el) {
                 el.classList.toggle('is-active');
                 const isActive = el.classList.contains('is-active');
-                showToast(isActive ? 'Sincronización activada' : 'Portal pausado');
+                showToast(isActive ? 'Portal conectado y sincronizando.' : 'Sincronización pausada.');
             };
 
-            // Notificación Toast Reutilizable
+            const toast = document.getElementById('toastMsg');
+            const toastText = document.getElementById('toastText');
             window.showToast = function(text) {
                 if (!toast || !toastText) return;
                 toastText.textContent = text;
                 toast.classList.add('show');
-                setTimeout(() => {
-                    toast.classList.remove('show');
-                }, 3000);
+                setTimeout(() => toast.classList.remove('show'), 3200);
             };
 
-            // Toggle Mobile Sidebar
+            // 8. Mobile Sidebar Toggle
             const mobileToggle = document.getElementById('mobileMenuToggle');
             if (mobileToggle) {
                 mobileToggle.style.display = window.innerWidth <= 900 ? 'flex' : 'none';
